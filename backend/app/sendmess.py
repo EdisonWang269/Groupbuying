@@ -1,7 +1,8 @@
 import configparser
 import requests
 
-config_path = '/home/wangpython/Gogroupbuy/backend/config.ini'
+# config_path = '/home/wangpython/Gogroupbuy/backend/config.ini'
+config_path = 'backend/config.ini'
 config = configparser.ConfigParser()
 config.read(config_path)
 channel_access_token = config['line-bot']['CHANNEL_ACCESS_TOKEN']

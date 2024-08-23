@@ -7,55 +7,11 @@ import base64
 
 product_bp = Blueprint("product", __name__)
 
-
 # 獲取商家的所有商品列表
 @product_bp.route("/api/product", methods=["GET"])
 @jwt_required()
 def get_all_products_by_storeid():
-    """
-    獲取商家的所有商品列表
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    responses:
-      200:
-        description: Get all products by storeid successfully
-        schema:
-          type: object
-          properties:
-            statement_date:
-              type: string
-              example: 2021-06-01
-            price:
-              type: integer
-              example: 100
-            unit:
-              type: string
-              example: 件
-            product_name:
-              type: string
-              example: 衣服
-            product_picture:
-              type: string
-              example: shirt.jpg
-        examples:
-          application/json:
-            statement_date: 2021-06-01
-            price: 100
-            unit: 件
-            product_name: 衣服
-            product_picture: shirt.jpg
-      404:
-        description: Fail to get all products by storeid
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Fail to get all products by storeid
-    """
+
     try:
 
         identity = get_jwt_identity()
@@ -63,20 +19,16 @@ def get_all_products_by_storeid():
 
         query = """
                 SELECT 
-                    GBP.group_buying_id,
-                    GBP.statement_date,
-                    P.product_id,
-                    P.price,
-                    P.unit,
-                    P.product_describe,
-                    P.product_name,
-                    P.product_picture
+                    product_id,
+                    statement_date,
+                    price,
+                    unit,
+                    product_name,
+                    product_picture
                 FROM 
-                    Group_buying_product GBP
-                INNER JOIN 
-                    Product P ON GBP.product_id = P.product_id
+                    Product
                 WHERE
-                    P.store_id = %s;
+                    store_id = %s;
             """
 
         products = execute_query(query, (store_id,), True)
@@ -84,19 +36,17 @@ def get_all_products_by_storeid():
         data = []
         if products:
             for product in products:
-                if product[7]:
-                    product_picture_base64 = base64.b64encode(product[7]).decode("utf-8")
+                if product[5]:
+                    product_picture_base64 = base64.b64encode(product[5]).decode("utf-8")
                 else:
                     product_picture_base64 = None
                 data.append(
                     {
-                        "group_buying_id": product[0],
+                        "product_id": product[0],
                         "statement_date": product[1],
-                        "product_id": product[2],
-                        "price": product[3],
-                        "unit": product[4],
-                        "product_describe": product[5],
-                        "product_name": product[6],
+                        "price": product[2],
+                        "unit": product[3],
+                        "product_name": product[4],
                         "product_picture": product_picture_base64,
                     }
                 )
@@ -104,171 +54,35 @@ def get_all_products_by_storeid():
     except Exception as e:
         return jsonify({"message": f"{e}"}), 404
 
-
-# 以store_id獲取商家的所有團購商品列表
-@product_bp.route("/api/product/groupbuying", methods=["GET"])
-@jwt_required()
-def get_all_groupbuying_products_by_storeid():
-    """
-    以store_id獲取商家的所有團購商品名稱列表
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    responses:
-      200:
-        description: Get all groupbuying products by storeid successfully
-        schema:
-          type: object
-          properties:
-            product_name:
-              type: string
-              example: 衣服
-        examples:
-          application/json:
-            product_name: 衣服
-      403:
-        description: 權限不足
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 權限不足
-        examples:
-          application/json:
-            message: 權限不足
-      404:
-        description: Fail to get all groupbuying products by storeid
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Fail to get all groupbuying products by store_id
-    """
-    identity = get_jwt_identity()
-    store_id = identity.get("store_id")
-
-    claims = get_jwt()
-    role = claims["role"]
-    if role != "merchant":
-        return jsonify({"message": "權限不足"}), 403
-
-    query = """
-                SELECT 
-                    p.product_name
-                FROM 
-                    Group_buying_product g
-                JOIN 
-                    Product p ON g.product_id = p.product_id
-                WHERE 
-                    p.store_id = %s;
-            """
-    products = execute_query(query, (store_id,), True)
-    if products:
-        data = []
-        for product in products:
-            data.append({"product_name": product[0]})
-        return jsonify(data), 200
-    return jsonify({"message": "Fail to get all groupbuying products by store_id"}), 404
-
-
 # 新增一項商品
 @product_bp.route("/api/product", methods=["POST"])
 @jwt_required()
 def create_product():
-    """
-    新增一項商品
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-      - name: body
-        in: body
-        schema:
-          type: object
-          required:
-            - price
-            - unit
-            - product_describe
-            - supplier_name
-            - product_name
-            - product_picture
-          properties:
-            price:
-              type: integer
-              description: 商品價格
-              example: 100
-            unit:
-              type: string
-              description: 商品單位
-              example: 件
-            product_describe:
-              type: string
-              description: 商品描述
-              example: 這是一個好商品
-            supplier_name:
-              type: string
-              description: 供應商名稱
-              example: AAA供應商
-            product_name:
-              type: string
-              description: 商品名稱
-              example: 衣服
-            product_picture:
-              type: string
-              description: 商品圖片
-              example: jfsioji256209fsfjqoi
-    responses:
-        201:
-            description: Pruduct created successfully
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: Product created successfully
-            examples:
-              application/json:
-                message: Product created successfully
-        403:
-            description: 權限不足
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 權限不足
-            examples:
-              application/json:
-                message: 權限不足
-        500:
-            description: Failed to create product
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: Failed to create product
-            examples:
-              application/json:
-                error: Failed to create product
-    """
-    if "photo" not in request.files:
-        return jsonify({"error": "No photo uploaded"}), 400
+    # if "photo" not in request.files:
+    #     return jsonify({"error": "No photo uploaded"}), 400
 
-    product_picture_file = request.files["photo"]
-    product_picture_binary = product_picture_file.read()
+    # product_picture_file = request.files["photo"]
+    # product_picture_binary = product_picture_file.read()
+    product_picture_binary = None
 
-    price = request.form.get("price")
-    unit = request.form.get("unit")
-    product_describe = request.form.get("product_describe")
-    supplier_name = request.form.get("supplier_name")
-    product_name = request.form.get("product_name")
+    # price = request.form.get("price")
+    # unit = request.form.get("unit")
+    # product_describe = request.form.get("product_describe")
+    # supplier_name = request.form.get("supplier_name")
+    # product_name = request.form.get("product_name")
+    # launch_date = request.form.get("launch_date")
+    # statement_date = request.form.get("statement_date")
+    # cost = request.form.get("cost")
+
+    data = request.json
+    price = data.get("price")
+    unit = data.get("unit")
+    product_describe = data.get("product_describe")
+    supplier_name = data.get("supplier_name")
+    product_name = data.get("product_name")
+    launch_date = data.get("launch_date")
+    statement_date = data.get("statement_date")
+    cost = data.get("cost")
 
     identity = get_jwt_identity()
     store_id = identity.get("store_id")
@@ -280,20 +94,12 @@ def create_product():
         return jsonify({"message": "權限不足"}), 403
 
     query = """
-                INSERT INTO `Product` (store_id, price, unit, product_describe, supplier_name, product_name, product_picture)
-                VALUES (%s, %s, %s, %s, %s, %s, %s);
+                INSERT INTO Product (store_id, price, unit, product_describe, supplier_name, product_name, product_picture, launch_date, statement_date, cost)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
             """
     result = execute_query(
         query,
-        (
-            store_id,
-            price,
-            unit,
-            product_describe,
-            supplier_name,
-            product_name,
-            product_picture_binary,
-        ),
+        (store_id, price, unit, product_describe, supplier_name, product_name, product_picture_binary, launch_date, statement_date, cost),
     )
 
     if result:
