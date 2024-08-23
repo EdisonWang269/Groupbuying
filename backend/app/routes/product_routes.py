@@ -108,192 +108,10 @@ def create_product():
     return jsonify({"error": "Failed to create product"}), 500
 
 
-# 新增一項團購商品
-@product_bp.route("/api/product/ontheshelves", methods=["POST"])
-@jwt_required()
-def create_group_buying_product():
-    """
-    新增一項團購商品
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-      - name: body
-        in: body
-        schema:
-          type: object
-          required:
-            - launch_date
-            - statement_date
-            - product_id
-          properties:
-            launch_date:
-              type: string
-              format: date
-              description: 上架日期
-              example: 2021-06-01
-            statement_date:
-              type: string
-              format: date
-              description: 截止日期
-              example: 2021-06-10
-            product_id:
-              type: integer
-              description: product_id
-              example: 1
-    responses:
-        201:
-            description: Product created successfully
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: group_buying_product created successfully
-            examples:
-              application/json:
-                message: group_buying_product created successfully
-        403:
-            description: 權限不足
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 權限不足
-            examples:
-              application/json:
-                message: 權限不足
-        404:
-            description: this product not in this store
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: this product not in this store
-            examples:
-              application/json:
-                error: this product not in this store
-        500:
-            description: Failed to create product
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: Failed to create group_buying_product
-            examples:
-              application/json:
-                error: Failed to create group_buying_product
-    """
-    data = request.json
-    launch_date = data.get("launch_date")
-    statement_date = data.get("statement_date")
-    product_id = data.get("product_id")
-
-    identity = get_jwt_identity()
-    store_id = identity.get("store_id")
-
-    claims = get_jwt()
-    role = claims["role"]
-
-    if role != "merchant":
-        return jsonify({"message": "權限不足"}), 403
-
-    query = "SELECT store_id FROM Product WHERE product_id = %s"
-    sid = execute_query(query, (product_id,))
-    if sid[0] == store_id:
-        query = "INSERT INTO `Group_buying_product`(launch_date, statement_date, product_id) VALUES(%s, %s, %s);"
-        result = execute_query(
-            query,
-            (
-                launch_date,
-                statement_date,
-                product_id,
-            ),
-        )
-        if result:
-            return (
-                jsonify({"message": "group_buying_product created successfully"}),
-                201,
-            )
-        return jsonify({"error": "Failed to create group_buying_product"}), 500
-
-    return jsonify({"error": "this product not in this store"}), 404
-
-
 # 結單時管理者進貨，更新團購商品：inventory/purchase_quantity/cost
-@product_bp.route("/api/product/<int:group_buying_id>", methods=["PUT"])
+@product_bp.route("/api/product/<int:product_id>", methods=["PUT"])
 @jwt_required()
-def update_purchase_quantity(group_buying_id):
-    """
-    結單時管理者進貨，更新團購商品：inventory/purchase_quantity/cost
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-          - name: group_buying_id
-            in: path
-            type: integer
-            required: true
-            description: group_buying_id
-            default: 1
-          - name: body
-            in: body
-            schema:
-                type: object
-                required:
-                    - purchase_quantity
-                    - cost
-                properties:
-                    purchase_quantity:
-                      type: integer
-                      description: 進貨數量
-                      example: 100
-                    cost:
-                      type: integer
-                      description: 進貨成本
-                      example: 2500
-    responses:
-        200:
-            description: group_buying_product purchase_quantity updated successfully
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: group_buying_product purchase_quantity updated successfully
-            examples:
-              application/json:
-                message: group_buying_product purchase_quantity updated successfully
-        403:
-            description: 權限不足
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 權限不足
-            examples:
-              application/json:
-                message: 權限不足
-        500:
-            description: Failed to update group_buying_product purchase_quantity
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: Failed to update group_buying_product purchase_quantity
-            examples:
-              application/json:
-                error: Failed to update group_buying_product purchase_quantity
-    """
+def update_purchase_quantity(product_id):
     data = request.json
     purchase_quantity = data.get("purchase_quantity")
     cost = data.get("cost")
@@ -305,9 +123,9 @@ def update_purchase_quantity(group_buying_id):
         return jsonify({"message": "權限不足"}), 403
 
     query = """
-                UPDATE `Group_buying_product`
+                UPDATE Product
                 SET purchase_quantity = %s, cost = %s, inventory = %s
-                WHERE group_buying_id = %s
+                WHERE product_id = %s
             """
     result = execute_query(
         query,
@@ -315,94 +133,20 @@ def update_purchase_quantity(group_buying_id):
             purchase_quantity,
             cost,
             purchase_quantity,
-            group_buying_id,
+            product_id,
         ),
     )
+
     if result:
-        return (
-            jsonify(
-                {
-                    "message": "group_buying_product purchase_quantity updated successfully"
-                }
-            ),
-            200,
-        )
-    return (
-        jsonify({"error": "Failed to update group_buying_product purchase_quantityt"}),
-        500,
-    )
+        return jsonify({"message": "Product purchase_quantity updated successfully"}), 200
+    
+    return jsonify({"error": "Failed to update product purchase_quantity"}), 500
 
 
 # 到貨時(更新團購商品：到貨日期arrival_date/領取截止日due_days)
 @product_bp.route("/api/product/arrival/<int:group_buying_id>", methods=["PUT"])
 @jwt_required()
 def update_arrival_date(group_buying_id):
-    """
-    到貨時(更新團購商品：到貨日期arrival_date/領取截止日due_days)
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-          - name: group_buying_id
-            in: path
-            type: integer
-            required: true
-            description: group_buying_id
-            default: 1
-          - name: body
-            in: body
-            schema:
-                type: object
-                required:
-                    - arrival_date
-                    - due_days
-                properties:
-                    arrival_date:
-                      type: string
-                      format: date
-                      description: 到貨日期
-                      example: 2021-06-01
-                    due_days:
-                      type: integer
-                      description: 領取時限(幾天)
-                      example: 7
-    responses:
-        200:
-            description: arrival_date updated successfully
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: arrival_date updated successfully
-            examples:
-              application/json:
-                message: arrival_date updated successfully
-        403:
-            description: 權限不足
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 權限不足
-            examples:
-              application/json:
-                message: 權限不足
-        500:
-            description: Failed to update arrival_date
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: Failed to update arrival_date
-            examples:
-              application/json:
-                error: Failed to update arrival_date
-    """
     data = request.json
     arrival_date = data.get("arrival_date")
     due_days = data.get("due_days")
