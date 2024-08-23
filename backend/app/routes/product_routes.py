@@ -107,13 +107,12 @@ def create_product():
 
     return jsonify({"error": "Failed to create product"}), 500
 
-# 結單時管理者進貨，更新團購商品：purchase_quantity/cost
+# 結單時管理者進貨，更新團購商品：purchase_quantity
 @product_bp.route("/api/product/<int:product_id>", methods=["PUT"])
 @jwt_required()
 def update_purchase_quantity(product_id):
     data = request.json
     purchase_quantity = data.get("purchase_quantity")
-    cost = data.get("cost")
 
     claims = get_jwt()
     role = claims["role"]
@@ -123,11 +122,11 @@ def update_purchase_quantity(product_id):
 
     query = """
                 UPDATE Product
-                SET purchase_quantity = %s, cost = %s
+                SET purchase_quantity = %s
                 WHERE product_id = %s
             """
     result = execute_query(
-        query, (purchase_quantity, cost, product_id,), )
+        query, (purchase_quantity, product_id,), )
 
     if result:
         return jsonify({"message": "Product purchase_quantity updated successfully"}), 200
@@ -161,145 +160,10 @@ def update_arrival_date(product_id):
     
     return jsonify({"error": "Failed to update arrival_date"}), 500
 
-# 下架商品時(更新團購商品：income)
-@product_bp.route("/api/product/income/<int:group_buying_id>", methods=["PUT"])
+# 更改結單日期（傳product_id，新結單時間，更新statement_date)
+@product_bp.route("/api/product/changedate/<int:product_id>", methods=["PUT"])
 @jwt_required()
-def calculate_income(group_buying_id):
-    """
-    下架商品時(更新團購商品：income)
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-          - name: group_buying_id
-            in: path
-            type: integer
-            required: true
-            description: group_buying_id
-            default: 1
-    responses:
-        200:
-            description: income updated successfully
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: income updated successfully
-            examples:
-              application/json:
-                message: income updated successfully
-        403:
-            description: 權限不足
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 權限不足
-            examples:
-              application/json:
-                message: 權限不足
-        500:
-            description: Failed to update income
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: Failed to update income
-            examples:
-              application/json:
-                error: Failed to update income
-    """
-    claims = get_jwt()
-    role = claims["role"]
-    if role != "merchant":
-        return jsonify({"message": "權限不足"}), 403
-
-    query = """with get_income (income) as
-                (SELECT (g.purchase_quantity - g.inventory) * p.price
-		        FROM Group_buying_product AS g, Product AS p
-		        WHERE g.product_id = p.product_id
-		        AND g.group_buying_id = %s)
-          
-            UPDATE Group_buying_product
-            SET income = (select income from get_income)
-            WHERE group_buying_id = %s"""
-    result = execute_query(query, (group_buying_id, group_buying_id))
-
-    if result:
-        return jsonify({"message": "income updated successfully"}), 200
-    return jsonify({"error": "Failed to update income"}), 500
-
-
-# 更改結單日期（傳group_buying_id，新結單時間，更新statement_date)
-@product_bp.route("/api/product/changedate/<int:group_buying_id>", methods=["PUT"])
-@jwt_required()
-def update_statement_date(group_buying_id):
-    """
-    更改結單日期
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-      - name: group_buying_id
-        in: path
-        type: integer
-        required: true
-        description: group_buying_id
-        default: 1
-      - name: body
-        in: body
-        schema:
-          type: object
-          required:
-            - new_statement_date
-          properties:
-            new_statement_date:
-              type: string
-              format: date
-              description: 結單日期
-              example: 2021-06-01
-    responses:
-      200:
-        description: statement_date updated successfully
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: statement_date updated successfully
-        examples:
-          application/json:
-            message: statement_date updated successfully
-      403:
-        description: 權限不足
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 權限不足
-        examples:
-          application/json:
-            message: 權限不足
-      500:
-        description: Failed to update statement_date
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: Failed to update statement_date
-        examples:
-          application/json:
-            error: Failed to update statement_date
-    """
+def update_statement_date(product_id):
     claims = get_jwt()
     role = claims["role"]
     if role != "merchant":
@@ -308,13 +172,16 @@ def update_statement_date(group_buying_id):
     data = request.json
     new_statement_date = data.get("new_statement_date")
 
-    query = """UPDATE Group_buying_product
-               SET statement_date = %s
-               WHERE group_buying_id = %s"""
-    result = execute_query(query, (new_statement_date, group_buying_id))
+    query = """
+                UPDATE Product
+                SET statement_date = %s
+                WHERE product_id = %s
+            """
+    result = execute_query(query, (new_statement_date, product_id))
 
     if result:
         return jsonify({"message": "statement_date updated successfully"}), 200
+    
     return jsonify({"error": "Failed to update statement_date"}), 500
 
 # 以store_id獲取商家的商品名稱/id（product)
