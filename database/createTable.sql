@@ -35,7 +35,6 @@ CREATE TABLE Product(
 	statement_date DATETIME,
 	arrival_date DATETIME,
 	due_days TINYINT,
-	inventory INT,
 	CONSTRAINT Product_PK PRIMARY KEY(product_id),
 	UNIQUE(product_id)
 );

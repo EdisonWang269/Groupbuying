@@ -107,8 +107,7 @@ def create_product():
 
     return jsonify({"error": "Failed to create product"}), 500
 
-
-# 結單時管理者進貨，更新團購商品：inventory/purchase_quantity/cost
+# 結單時管理者進貨，更新團購商品：purchase_quantity/cost
 @product_bp.route("/api/product/<int:product_id>", methods=["PUT"])
 @jwt_required()
 def update_purchase_quantity(product_id):
@@ -124,18 +123,11 @@ def update_purchase_quantity(product_id):
 
     query = """
                 UPDATE Product
-                SET purchase_quantity = %s, cost = %s, inventory = %s
+                SET purchase_quantity = %s, cost = %s
                 WHERE product_id = %s
             """
     result = execute_query(
-        query,
-        (
-            purchase_quantity,
-            cost,
-            purchase_quantity,
-            product_id,
-        ),
-    )
+        query, (purchase_quantity, cost, product_id,), )
 
     if result:
         return jsonify({"message": "Product purchase_quantity updated successfully"}), 200
@@ -144,9 +136,9 @@ def update_purchase_quantity(product_id):
 
 
 # 到貨時(更新團購商品：到貨日期arrival_date/領取截止日due_days)
-@product_bp.route("/api/product/arrival/<int:group_buying_id>", methods=["PUT"])
+@product_bp.route("/api/product/arrival/<int:product_id>", methods=["PUT"])
 @jwt_required()
-def update_arrival_date(group_buying_id):
+def update_arrival_date(product_id):
     data = request.json
     arrival_date = data.get("arrival_date")
     due_days = data.get("due_days")
@@ -158,105 +150,16 @@ def update_arrival_date(group_buying_id):
         return jsonify({"message": "權限不足"}), 403
 
     query = """
-                UPDATE `Group_buying_product`
+                UPDATE Product
                 SET arrival_date = %s, due_days = %s
-                WHERE group_buying_id = %s
+                WHERE product_id = %s
             """
 
-    result = execute_query(query, (arrival_date, due_days, group_buying_id))
+    result = execute_query(query, (arrival_date, due_days, product_id))
     if result:
         return jsonify({"message": "arrival_date updated successfully"}), 200
+    
     return jsonify({"error": "Failed to update arrival_date"}), 500
-
-
-# 增加現場購買客人（更新團購商品庫存量）
-@product_bp.route(
-    "/api/product/instore_shopping/<int:group_buying_id>", methods=["PUT"]
-)
-@jwt_required()
-def update_inventory(group_buying_id):
-    """
-    增加現場購買客人（更新團購商品庫存量）
-    ---
-    tags:
-      - Product
-    security:
-      - APIKeyHeader: []
-    parameters:
-          - name: group_buying_id
-            in: path
-            type: integer
-            required: true
-            description: group_buying_id
-            default: 1
-          - name: body
-            in: body
-            schema:
-                type: object
-                required:
-                    - instore_purchase_quantity
-                properties:
-                    instore_purchase_quantity:
-                      type: integer
-                      description: 現場購買數量
-                      example: 3
-    responses:
-        200:
-            description: inventory updated successfully
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: inventory updated successfully
-            examples:
-              application/json:
-                message: inventory updated successfully
-        403:
-            description: 權限不足
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 權限不足
-            examples:
-              application/json:
-                message: 權限不足
-        500:
-            description: Failed to update inventory
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  example: Failed to update inventory
-            examples:
-              application/json:
-                error: Failed to update inventory
-    """
-    data = request.json
-    instore_purchase_quantity = data.get("instore_purchase_quantity")
-
-    claims = get_jwt()
-    role = claims["role"]
-    if role != "merchant":
-        return jsonify({"message": "權限不足"}), 403
-
-    query = """SELECT inventory FROM Group_buying_product WHERE group_buying_id = %s"""
-    inventory = execute_query(query, (group_buying_id,))
-    if inventory[0] - instore_purchase_quantity < 0:
-        return jsonify({"error": "inventory can not be negative"}), 500
-
-    query = """UPDATE Group_buying_product
-                SET inventory = inventory - %s
-                WHERE group_buying_id = %s"""
-    result = execute_query(query, (instore_purchase_quantity, group_buying_id))
-
-    if result:
-        return jsonify({"message": "inventory updated successfully"}), 200
-    return jsonify({"error": "Failed to update inventory"}), 500
-
 
 # 下架商品時(更新團購商品：income)
 @product_bp.route("/api/product/income/<int:group_buying_id>", methods=["PUT"])
