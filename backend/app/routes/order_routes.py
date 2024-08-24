@@ -200,9 +200,9 @@ def get_order_by_storeid():
         return jsonify({"message": str(e)}), 404
 
 # 一鍵通知該團購所有未取貨的顧客
-@order_bp.route("/api/order/notify/<int:group_buying_id>", methods=["GET"])
+@order_bp.route("/api/order/notify/<int:product_id>", methods=["GET"])
 @jwt_required()
-def get_userid_by_group_buying_id(group_buying_id):
+def get_userid_by_group_buying_id(product_id):
     claims = get_jwt()
     role = claims["role"]
 
@@ -213,10 +213,10 @@ def get_userid_by_group_buying_id(group_buying_id):
                 SELECT O.userid, P.product_name, P.price, O.quantity, DATE(P.arrival_date) AS arrival_date, P.due_days
                 FROM `Order` O
                 JOIN Product P ON O.product_id = P.product_id
-                WHERE O.group_buying_id = %s 
+                WHERE O.product_id = %s 
                 AND O.receive_status = FALSE;
             """
-    results = execute_query(query, (group_buying_id,), True)
+    results = execute_query(query, (product_id,), True)
 
     if not results:
         return jsonify({"message": "Fail to get all userid by group_buying_id"}), 404
