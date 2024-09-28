@@ -32,12 +32,16 @@ def check_role(store_id, userid):
     # 未註冊
     return {}
 
-# 登入時授予身份
-@user_bp.route("/api/user", methods=["POST"])
+# 登入授權 (POST)
+# 驗證身份並創建 JWT token
+@user_bp.route("/api/users/login", methods=["POST"])
 def login_check():
     data = request.json
     store_id = data.get('store_id')
     userid = data.get('userid')
+
+    if not store_id or not userid:
+        return jsonify({"message": "store_id and userid are required"}), 400
 
     role_info = check_role(store_id, userid)
     if role_info:
@@ -64,23 +68,26 @@ def login_check():
         
         return jsonify({"message": "Enroll failed"}), 500
 
-# 更改用戶名字和電話
-@user_bp.route("/api/user", methods=["PUT"])
+# 更改用戶名字和電話 (PUT)
+# 更新特定用戶的信息
+@user_bp.route("/api/users/<string:userid>", methods=["PUT"])
 @jwt_required()
-def update_user_info():
+def update_user_info(userid):
     data = request.json
     phone = data.get('phone')
     user_name = data.get('user_name')
+
+    if not phone or not user_name:
+        return jsonify({"message": "Phone and user_name are required"}), 400
     
     identity = get_jwt_identity()
     store_id = identity.get('store_id')
-    userid = identity.get('userid')
 
     claims = get_jwt()
     role = claims['role']
     
     if role == "merchant":
-        return jsonify({"message": "Merchant don't have phone"}), 400
+        return jsonify({"message": "Merchants cannot update phone numbers"}), 400
 
     query = "UPDATE Customer SET user_name = %s, phone = %s WHERE userid = %s AND store_id = %s"
     result = execute_query(query, (user_name, phone, userid, store_id))
@@ -89,12 +96,16 @@ def update_user_info():
     
     return jsonify({"message": "Fail to update user info"}), 500
 
-# 修改用戶blacklist
-@user_bp.route("/api/user/<string:operation>", methods=["PUT"])
+# 修改用戶黑名單狀態 (PUT)
+# 修改用戶的黑名單狀態，operation 可以是 0, 1, -1
+@user_bp.route("/api/users/<string:userid>/blacklist", methods=["PUT"])
 @jwt_required()
-def update_user_blacklist(operation):
+def update_user_blacklist(userid):
     data = request.json
-    userid = data.get('userid')
+    operation = data.get('operation')
+
+    if operation not in ["0", "1", "-1"]:
+        return jsonify({"message": "Invalid operation, must be '0', '1', or '-1'"}), 400
     
     identity = get_jwt_identity()
     store_id = identity.get('store_id')
@@ -103,7 +114,6 @@ def update_user_blacklist(operation):
     role = claims['role']
     if role != 'merchant':
         return jsonify({"message":"權限不足"}), 403
-
 
     role_info = check_role(store_id, userid)
     if not role_info:
@@ -118,7 +128,7 @@ def update_user_blacklist(operation):
     elif operation == "1":
         blacklist += 1
     elif operation == "-1":
-        blacklist -= 1
+        blacklist = max(0, blacklist - 1)
     else:
         return jsonify({"message": "Invalid operation"}), 400
 
