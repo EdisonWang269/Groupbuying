@@ -9,8 +9,9 @@ import base64
 
 order_bp = Blueprint("order", __name__)
 
-# 提交一筆訂單
-@order_bp.route("/api/order", methods=["POST"])
+# 提交一筆訂單 (POST)
+# 輸入 product_id 和 quantity，創建一筆新訂單
+@order_bp.route("/api/orders", methods=["POST"])
 @jwt_required()
 def create_order():
     data = request.json
@@ -31,8 +32,9 @@ def create_order():
     return jsonify({"error": "Failed to create order"}), 500
 
 
-# 用userid查詢一名客戶所有清單
-@order_bp.route("/api/order/<string:userid>", methods=["GET"])
+# 根據用戶ID查詢所有訂單 (GET)
+# 取得指定 userid 的用戶的所有訂單
+@order_bp.route("/api/users/<string:userid>/orders", methods=["GET"])
 @jwt_required()
 def get_all_orders_by_userid(userid):
     try:
@@ -79,14 +81,21 @@ def get_all_orders_by_userid(userid):
                     }
                 )
             return jsonify(data), 200
+        return jsonify({"message": "No orders found"}), 404
+
     except Exception as e:
-        return jsonify({"message": str(e)}), 404
+        return jsonify({"message": str(e)}), 500
 
 
-# 用手機查詢一名客戶所有清單
-@order_bp.route("/api/order/phone/<string:phone>", methods=["GET"])
+# 根據手機號碼查詢所有訂單 (GET)
+# 透過手機號碼查詢特定用戶的訂單
+@order_bp.route("/api/users/orders", methods=["GET"])
 @jwt_required()
-def get_all_orders_by_phone(phone):
+def get_all_orders_by_phone():
+    phone = request.args.get('phone')
+    if not phone:
+        return jsonify({"error": "Phone number is required"}), 400
+
     identity = get_jwt_identity()
     store_id = identity.get("store_id")
 
@@ -138,11 +147,11 @@ def get_all_orders_by_phone(phone):
 
     return jsonify({"message": "Fail to get all orders by phone"}), 404
 
-# 給storeid回傳所有Order
-@order_bp.route("/api/order", methods=["GET"])
+# 根據商家ID查詢所有訂單 (GET)
+# 取得特定商家的所有訂單
+@order_bp.route("/api/orders", methods=["GET"])
 @jwt_required()
 def get_order_by_storeid():
-
     try:
         identity = get_jwt_identity()
         store_id = identity.get("store_id")
@@ -199,8 +208,9 @@ def get_order_by_storeid():
     except Exception as e:
         return jsonify({"message": str(e)}), 404
 
-# 一鍵通知該團購所有未取貨的顧客
-@order_bp.route("/api/order/notify/<int:product_id>", methods=["GET"])
+# 一鍵通知所有未取貨的顧客 (POST)
+# 根據 product_id，通知所有尚未取貨的客戶
+@order_bp.route("/api/products/<int:product_id>/orders/notify", methods=["POST"])
 @jwt_required()
 def get_userid_by_group_buying_id(product_id):
     claims = get_jwt()
