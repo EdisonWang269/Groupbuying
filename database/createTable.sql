@@ -29,7 +29,7 @@ CREATE TABLE Product(
 	product_describe VARCHAR(255),
 	supplier_name VARCHAR(255),
 	product_name VARCHAR(255),
-	product_picture LONGBLOB,
+	product_picture VARCHAR(255),
 	purchase_quantity INT,
 	launch_date DATETIME,
 	statement_date DATETIME,
