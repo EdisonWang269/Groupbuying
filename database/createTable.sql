@@ -23,7 +23,7 @@ CREATE TABLE Customer(
 CREATE TABLE Product(
 	product_id BIGINT NOT NULL AUTO_INCREMENT,
 	store_id VARCHAR(255) NOT NULL,
-	price INT,
+	price DOUBLE,
 	unit VARCHAR(255),
 	cost DOUBLE,
 	product_describe VARCHAR(255),
