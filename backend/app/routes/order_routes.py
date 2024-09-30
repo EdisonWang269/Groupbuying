@@ -70,14 +70,12 @@ def get_all_orders_by_userid(userid):
                 else:
                     due_date = None
 
-                product_picture_base64 = base64.b64encode(order[4]).decode("utf-8") if order[4] else None 
-
                 data.append(
                     {
                         "product_name": order[0],
                         "due_date": due_date,
                         "receive_status": order[3],
-                        "product_picture": product_picture_base64,
+                        "product_picture": order[4],
                     }
                 )
             return jsonify(data), 200
