@@ -138,7 +138,7 @@ def create_product():
             return jsonify({"error": "No selected file"}), 400
 
         # 檢查文件類型
-        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+        allowed_extensions = {'png', 'jpg', 'jpeg'}
         if not file.filename.lower().split('.')[-1] in allowed_extensions:
             return jsonify({"error": "Invalid file type"}), 400
 
