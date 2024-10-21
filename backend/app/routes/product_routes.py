@@ -39,7 +39,8 @@ def get_all_products_by_storeid():
                 price,
                 unit,
                 product_name,
-                product_picture
+                product_picture,
+                product_describe
             FROM 
                 Product
             WHERE
