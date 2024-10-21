@@ -32,6 +32,18 @@ def create_order():
         userid = identity.get("userid")
         store_id = identity.get("store_id")
 
+        # 檢查該用戶的 phone 欄位是否為 null
+        check_customer_query =  """
+                                    SELECT phone FROM Customer 
+                                    WHERE userid = %s AND store_id = %s
+                                """
+        customer_result = execute_query(check_customer_query, (userid, store_id))
+        print(type(customer_result))
+        phone = customer_result
+
+        if phone:
+            return jsonify({"error": "User phone number is not set. Please update your profile."}), 400
+
         check_product_query =   """
                                     SELECT product_id FROM Product 
                                     WHERE product_id = %s AND store_id = %s
