@@ -1,0 +1,95 @@
+/* src/styles/Profile.css */
+.profile-container {
+  padding: 20px;
+  min-height: calc(100vh - 60px);
+  background-color: #f5f5f5;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.page-header {
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  width: 100%;
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.profile-content {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #ddd;
+  object-fit: cover;
+}
+
+.info-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.info-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.info-group label {
+  display: block;
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.info-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* RWD 適配 */
+@media screen and (max-width: 480px) {
+  .profile-container {
+    padding: 16px;
+  }
+
+  .info-container {
+    padding: 16px;
+  }
+
+  .info-input {
+    padding: 8px;
+    font-size: 16px; /* 防止 iOS 自動縮放 */
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .profile-container {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+}
