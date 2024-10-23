@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 
 const HomePage = () => {
-  // 模擬商品數據
   const [products] = useState([
     {
       id: 1,

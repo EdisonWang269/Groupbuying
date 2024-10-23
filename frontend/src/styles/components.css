@@ -1,0 +1,290 @@
+/* src/styles/components.css */
+
+/* 底部導航欄 */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px;
+    border-top: 1px solid var(--border-color);
+    z-index: 1000;
+  }
+  
+  .bottom-nav button {
+    background: none;
+    border: none;
+    padding: 8px;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1rem;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .bottom-nav button.active {
+    color: var(--primary-color);
+  }
+  
+  /* 彈出視窗 */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .modal-content h3 {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    color: var(--text-color);
+  }
+  
+  .modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  
+  .modal-buttons button {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    background: white;
+  }
+  
+  .modal-buttons button:last-child {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+  }
+  
+  /* 商品卡片 */
+  .product-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .product-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background-color: #f5f5f5;
+    display: block;
+  }
+  
+  .product-card .product-info {
+    padding: 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product-card h3 {
+    font-size: 1rem;
+    margin: 0 0 8px 0;
+    color: var(--text-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+  }
+  
+  .product-card .price {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin: 4px 0;
+    font-size: 1.2rem;
+  }
+  
+  .product-card .date {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-top: auto;
+  }
+  
+  /* 數量選擇器 */
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+    justify-content: center;
+  }
+  
+  .quantity-selector button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quantity-selector button:hover {
+    background: var(--background-light);
+  }
+  
+  .quantity-selector span {
+    font-size: 1.1rem;
+    min-width: 40px;
+    text-align: center;
+  }
+  
+  /* 訂單卡片 */
+  .order-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .order-info {
+    display: flex;
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .order-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+  }
+  
+  .order-details {
+    flex: 1;
+  }
+  
+  .order-details h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+  }
+  
+  .order-details p {
+    margin: 4px 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+  
+  /* 狀態標籤 */
+  .status-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+  
+  .status-tag.待領取 {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  
+  .status-tag.已領取 {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+  
+  .status-tag.已結單 {
+    background-color: #e5e7eb;
+    color: #4b5563;
+  }
+  
+  /* 通用按鈕 */
+  .order-button {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin: 16px 0;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .order-button:hover {
+    background-color: #c53030;
+  }
+  
+  /* 手機輸入框 */
+  .phone-input {
+    margin-top: 16px;
+  }
+  
+  .phone-input input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+  }
+  
+  .phone-input input:focus {
+    border-color: var(--primary-color);
+  }
+  
+  /* RWD 調整 */
+  @media (max-width: 480px) {
+    .modal-content {
+      width: 95%;
+      padding: 20px;
+    }
+  
+    .quantity-selector button {
+      width: 32px;
+      height: 32px;
+    }
+  
+    .order-info {
+      padding: 12px;
+    }
+  
+    .order-image {
+      width: 60px;
+      height: 60px;
+    }
+  }

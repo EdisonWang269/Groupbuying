@@ -5,7 +5,6 @@ import ProductDetail from './pages/ProductDetail';
 import UserProfile from './pages/UserProfile';
 import OrderHistory from './pages/OrderHistory';
 import Navigation from './components/Navigation';
-import './App.css';
 
 const App = () => {
   return (

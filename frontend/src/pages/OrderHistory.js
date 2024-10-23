@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../styles/OrderHistory.css';
 
 const OrderHistory = () => {
   const [selectedFilter, setSelectedFilter] = useState('所有訂單');

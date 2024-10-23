@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
 
   return (
     <div
@@ -10,9 +11,10 @@ const ProductCard = ({ product }) => {
       onClick={() => navigate(`/product/${product.id}`)}
     >
       <img
-        src={product.product_picture}
+        src={imageError ? '/path/to/placeholder-image.jpg' : product.product_picture}
         alt={product.product_name}
         className="product-image"
+        onError={() => setImageError(true)}
       />
       <div className="product-info">
         <h3>{product.product_name}</h3>

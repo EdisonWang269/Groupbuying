@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/Profile.css';
 
 const UserProfile = () => {
   const [userInfo, setUserInfo] = useState({
     name: '陳以琳',
     phone: '0922-111-333'
   });
-  
-  const navigate = useNavigate();
 
   return (
     <div className="profile-container">

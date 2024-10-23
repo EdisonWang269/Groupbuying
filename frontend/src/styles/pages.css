@@ -1,0 +1,138 @@
+/* src/styles/pages.css */
+/* 首頁 */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  /* 商品詳情頁 */
+  .product-detail {
+    min-height: 100vh;
+    background: white;
+  }
+  
+  .product-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0 12px;
+    cursor: pointer;
+  }
+  
+  .product-content {
+    padding: 16px;
+  }
+  
+  .product-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .product-description {
+    margin-top: 24px;
+  }
+  
+  .product-description h4 {
+    margin-bottom: 12px;
+  }
+  
+  /* 個人資料頁 */
+  .profile-container {
+    padding: 20px;
+    min-height: calc(100vh - 60px);
+    background-color: var(--background-light);
+  }
+  
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ddd;
+    object-fit: cover;
+  }
+  
+  .info-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .info-group {
+    margin-bottom: 20px;
+  }
+  
+  .info-group label {
+    display: block;
+    color: var(--text-light);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .info-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  /* 訂單歷史頁 */
+  .order-history-container {
+    padding: 20px;
+    min-height: calc(100vh - 60px);
+    background-color: var(--background-light);
+  }
+  
+  .filter-select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: white;
+    font-size: 1rem;
+  }
+  
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  /* RWD 適配 */
+  @media (min-width: 768px) {
+    .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .profile-container,
+    .order-history-container,
+    .product-detail {
+      max-width: 768px;
+      margin: 0 auto;
+    }
+  
+    .filter-select {
+      width: auto;
+      float: right;
+      margin-top: 0;
+    }
+  }

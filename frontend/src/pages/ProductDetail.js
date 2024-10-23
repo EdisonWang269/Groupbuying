@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import OrderModal from '../components/OrderModal';
 
 const ProductDetail = () => {
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const { id } = useParams();
@@ -17,7 +18,7 @@ const ProductDetail = () => {
   return (
     <div className="product-detail">
       <header className="product-header">
-        <button className="back-button">←</button>
+        <button className="back-button" onClick={() => navigate(-1)}>←</button>
         <h2>恩恩的團購</h2>
       </header>
       
