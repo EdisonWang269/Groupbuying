@@ -1,4 +1,14 @@
+// src/components/OrderModal/index.js
 import React, { useState } from 'react';
+import {
+  Overlay,
+  Content,
+  Title,
+  OrderDetails,
+  PhoneInput,
+  ButtonGroup,
+  Button
+} from './styles';
 
 const OrderModal = ({ onClose, quantity }) => {
   const [phone, setPhone] = useState('');
@@ -11,31 +21,31 @@ const OrderModal = ({ onClose, quantity }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h3>訂單確認</h3>
-        <div className="order-details">
+    <Overlay>
+      <Content>
+        <Title>訂單確認</Title>
+        <OrderDetails>
           <p>商品：香酥芋泥蛋糕</p>
           <p>數量：{quantity}</p>
-        </div>
+        </OrderDetails>
         
         {showPhoneInput && (
-          <div className="phone-input">
+          <PhoneInput>
             <input
               type="tel"
               placeholder="請輸入手機號碼"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
-          </div>
+          </PhoneInput>
         )}
         
-        <div className="modal-buttons">
-          <button onClick={onClose}>取消</button>
-          <button onClick={handleSubmit}>確定</button>
-        </div>
-      </div>
-    </div>
+        <ButtonGroup>
+          <Button onClick={onClose}>取消</Button>
+          <Button primary onClick={handleSubmit}>確定</Button>
+        </ButtonGroup>
+      </Content>
+    </Overlay>
   );
 };
 

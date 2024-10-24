@@ -1,6 +1,13 @@
+// src/pages/HomePage/index.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../../components/ProductCard';
+import {
+  Container,
+  Header,
+  Title,
+  SearchBar,
+  ProductsGrid
+} from './styles';
 
 const HomePage = () => {
   const [products] = useState([
@@ -21,19 +28,19 @@ const HomePage = () => {
   ]);
 
   return (
-    <div className="page-container">
-      <header className="header">
-        <h1>恩恩的團購商品</h1>
-        <div className="search-bar">
+    <Container>
+      <Header>
+        <Title>恩恩的團購商品</Title>
+        <SearchBar>
           <input type="text" placeholder="Search" />
-        </div>
-      </header>
-      <div className="products-grid">
+        </SearchBar>
+      </Header>
+      <ProductsGrid>
         {products.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
-    </div>
+      </ProductsGrid>
+    </Container>
   );
 };
 

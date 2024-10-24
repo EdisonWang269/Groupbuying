@@ -1,16 +1,21 @@
+// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles/common.css';
-import './styles/components.css';
-import './styles/pages.css';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@emotion/react';
+import { theme } from './styles/theme';
+import { GlobalStyles } from './styles/GlobalStyles';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
-
-reportWebVitals();

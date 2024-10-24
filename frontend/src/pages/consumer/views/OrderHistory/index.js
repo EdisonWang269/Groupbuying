@@ -1,4 +1,19 @@
+// src/pages/OrderHistory/index.js
 import React, { useState } from 'react';
+import {
+  Container,
+  Header,
+  Title,
+  FilterContainer,
+  Select,
+  OrdersList,
+  OrderCard,
+  OrderInfo,
+  OrderImage,
+  OrderDetails,
+  StatusTag,
+  NoOrders
+} from './styles';
 
 const OrderHistory = () => {
   const [selectedFilter, setSelectedFilter] = useState('所有訂單');
@@ -29,7 +44,6 @@ const OrderHistory = () => {
     }
   ]);
 
-  // 篩選訂單
   const filterOrders = (filter) => {
     switch (filter) {
       case '代領清單':
@@ -44,54 +58,52 @@ const OrderHistory = () => {
   const filteredOrders = filterOrders(selectedFilter);
 
   return (
-    <div className="order-history-container">
-      <header className="page-header">
-        <h1>歷史訂單</h1>
-        <div className="filter-select-container">
-          <select 
+    <Container>
+      <Header>
+        <Title>歷史訂單</Title>
+        <FilterContainer>
+          <Select 
             value={selectedFilter}
             onChange={(e) => setSelectedFilter(e.target.value)}
-            className="filter-select"
           >
             <option value="所有訂單">所有訂單</option>
             <option value="代領清單">代領清單</option>
             <option value="歷史訂單">歷史訂單</option>
-          </select>
-        </div>
-      </header>
+          </Select>
+        </FilterContainer>
+      </Header>
 
-      <div className="orders-list">
+      <OrdersList>
         {filteredOrders.length === 0 ? (
-          <div className="no-orders">
+          <NoOrders>
             <p>沒有符合條件的訂單</p>
-          </div>
+          </NoOrders>
         ) : (
           filteredOrders.map(order => (
-            <div key={order.id} className="order-card">
-              <div className="order-info">
-                <img 
+            <OrderCard key={order.id}>
+              <OrderInfo>
+                <OrderImage 
                   src={order.image} 
-                  alt={order.productName} 
-                  className="order-image"
+                  alt={order.productName}
                   onError={(e) => {
-                    e.target.onerror = null; // 防止無限循環
-                    e.target.src = '/default-product-image.jpg'; // 設置預設圖片
+                    e.target.onerror = null;
+                    e.target.src = '/default-product-image.jpg';
                   }}
                 />
-                <div className="order-details">
+                <OrderDetails>
                   <h3>{order.productName}</h3>
                   <p>結單日期：{order.statement_date}</p>
                   <p>取貨日期：{order.delivery_date}</p>
-                  <span className={`status-tag ${order.status}`}>
+                  <StatusTag status={order.status}>
                     {order.status}
-                  </span>
-                </div>
-              </div>
-            </div>
+                  </StatusTag>
+                </OrderDetails>
+              </OrderInfo>
+            </OrderCard>
           ))
         )}
-      </div>
-    </div>
+      </OrdersList>
+    </Container>
   );
 };
 

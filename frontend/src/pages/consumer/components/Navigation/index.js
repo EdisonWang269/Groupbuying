@@ -1,31 +1,33 @@
+// src/components/Navigation/index.js
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Nav, NavButton } from './styles';
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <nav className="bottom-nav">
-      <button
-        className={location.pathname === '/' ? 'active' : ''}
+    <Nav>
+      <NavButton
+        isActive={location.pathname === '/'}
         onClick={() => navigate('/')}
       >
         團購首頁
-      </button>
-      <button
-        className={location.pathname === '/profile' ? 'active' : ''}
+      </NavButton>
+      <NavButton
+        isActive={location.pathname === '/profile'}
         onClick={() => navigate('/profile')}
       >
         個人資料
-      </button>
-      <button
-        className={location.pathname === '/history' ? 'active' : ''}
+      </NavButton>
+      <NavButton
+        isActive={location.pathname === '/history'}
         onClick={() => navigate('/history')}
       >
         歷史清單
-      </button>
-    </nav>
+      </NavButton>
+    </Nav>
   );
 };
 
