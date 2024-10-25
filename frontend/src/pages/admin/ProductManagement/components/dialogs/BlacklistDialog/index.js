@@ -1,15 +1,17 @@
-// src/components/dialogs/BlacklistDialog/index.js
+// src/pages/admin/components/BlacklistDialog/index.js
 import React from 'react';
 import { UserX, AlertTriangle } from 'lucide-react';
+import {
+  AdminPrimaryButton,
+  AdminSecondaryButton,
+  IconWrapper
+} from '../../../../components/shared/styles';
 import {
   DialogOverlay,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  Button
-} from '../common/styles';
-import {
   WarningSection,
   CustomerList,
   CustomerItem,
@@ -24,7 +26,9 @@ const BlacklistDialog = ({ isOpen, onClose, onConfirm, product }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <UserX size={20} />
+            <IconWrapper>
+              <UserX size={20} />
+            </IconWrapper>
             更新黑名單狀態
           </DialogTitle>
         </DialogHeader>
@@ -36,8 +40,10 @@ const BlacklistDialog = ({ isOpen, onClose, onConfirm, product }) => {
           </InfoSection>
 
           <WarningSection>
-            <AlertTriangle size={20} />
-            <div>
+            <IconWrapper>
+              <AlertTriangle size={20} />
+            </IconWrapper>
+            <div className="warning-content">
               <h4>注意事項</h4>
               <p>這些顧客的黑名單次數將增加 1 次</p>
             </div>
@@ -61,15 +67,12 @@ const BlacklistDialog = ({ isOpen, onClose, onConfirm, product }) => {
         </div>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={onClose}>
+          <AdminSecondaryButton onClick={onClose}>
             取消
-          </Button>
-          <Button 
-            variant="primary"
-            onClick={onConfirm}
-          >
+          </AdminSecondaryButton>
+          <AdminPrimaryButton onClick={onConfirm}>
             確認更新
-          </Button>
+          </AdminPrimaryButton>
         </DialogFooter>
       </DialogContent>
     </DialogOverlay>

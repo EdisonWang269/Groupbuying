@@ -1,16 +1,19 @@
+// src/pages/admin/PhaseThree/styles.js
 import styled from '@emotion/styled';
-
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${props => props.theme.spacing.lg};
-`;
+import { AdminButton } from '../../../components/shared/styles';
 
 export const ProductCard = styled.div`
   background-color: ${props => props.theme.colors.white};
   border-radius: ${props => props.theme.borderRadius.lg};
   padding: ${props => props.theme.spacing.lg};
   box-shadow: ${props => props.theme.shadows.sm};
+  margin-bottom: ${props => props.theme.spacing.lg};
+  transition: all ${props => props.theme.transition.default};
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.md};
+  }
 `;
 
 export const ProductHeader = styled.div`
@@ -18,11 +21,17 @@ export const ProductHeader = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: ${props => props.theme.spacing.lg};
+
+  .date-info {
+    display: flex;
+    align-items: center;
+    gap: ${props => props.theme.spacing.sm};
+  }
 `;
 
 export const ProductTitle = styled.h2`
   font-size: ${props => props.theme.typography.h2.fontSize};
-  font-weight: ${props => props.theme.typography.h2.fontWeight};
+  font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: ${props => props.theme.spacing.sm};
 `;
@@ -33,24 +42,18 @@ export const InfoRow = styled.div`
   gap: ${props => props.theme.spacing.lg};
   color: ${props => props.theme.colors.textLight};
   font-size: ${props => props.theme.typography.body.fontSize};
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${props => props.theme.spacing.sm};
+  }
 `;
 
 export const ProductInfo = styled.div`
-  margin-top: ${props => props.theme.spacing.lg};
-`;
-
-export const StatusTag = styled.span`
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.borderRadius.full};
-  font-size: ${props => props.theme.typography.small.fontSize};
-  font-weight: 500;
-  ${props => props.status === 'received' ? `
-    background-color: ${props.theme.colors.success}15;
-    color: ${props.theme.colors.success};
-  ` : `
-    background-color: ${props.theme.colors.warning}15;
-    color: ${props.theme.colors.warning};
-  `}
+  .progress-section {
+    margin-bottom: ${props => props.theme.spacing.lg};
+  }
 `;
 
 export const ProgressBar = styled.div`
@@ -68,7 +71,7 @@ export const ProgressBar = styled.div`
     left: 0;
     height: 100%;
     width: ${props => props.progress}%;
-    background-color: ${props => props.theme.colors.success};
+    background-color: #6CB7AA;
     transition: width 0.3s ease;
   }
 `;
@@ -79,56 +82,87 @@ export const ProgressText = styled.div`
   margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
+export const TableContainer = styled.div`
+  overflow-x: auto;
+  border-radius: ${props => props.theme.borderRadius.md};
+  border: 1px solid ${props => props.theme.colors.border};
+`;
+
 export const OrdersTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  min-width: 800px;
 `;
 
 export const TableHeader = styled.tr`
   th {
     text-align: left;
-    padding: ${props => props.theme.spacing.sm};
+    padding: ${props => props.theme.spacing.md};
+    background-color: ${props => props.theme.colors.backgroundLight};
     border-bottom: 1px solid ${props => props.theme.colors.border};
-    color: ${props => props.theme.colors.textLight};
+    color: ${props => props.theme.colors.text};
     font-weight: 500;
     font-size: ${props => props.theme.typography.small.fontSize};
+    white-space: nowrap;
+
+    &:first-of-type {
+      padding-left: ${props => props.theme.spacing.lg};
+    }
+
+    &:last-of-type {
+      padding-right: ${props => props.theme.spacing.lg};
+    }
   }
 `;
 
 export const TableRow = styled.tr`
   td {
-    padding: ${props => props.theme.spacing.sm};
+    padding: ${props => props.theme.spacing.md};
     border-bottom: 1px solid ${props => props.theme.colors.border};
     color: ${props => props.theme.colors.text};
+    font-size: ${props => props.theme.typography.body.fontSize};
+
+    &:first-of-type {
+      padding-left: ${props => props.theme.spacing.lg};
+    }
+
+    &:last-of-type {
+      padding-right: ${props => props.theme.spacing.lg};
+    }
   }
 
   &:last-child td {
     border-bottom: none;
   }
-`;
-
-export const ActionButton = styled.button`
-  padding: ${props => `${props.theme.spacing.xs} ${props.theme.spacing.sm}`};
-  background-color: ${props => props.theme.colors.primary};
-  color: white;
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-size: ${props => props.theme.typography.small.fontSize};
-  transition: background-color ${props => props.theme.transition.default};
 
   &:hover {
-    background-color: ${props => props.theme.colors.primary}dd;
+    background-color: ${props => props.theme.colors.backgroundLight};
+  }
+`;
+
+export const ActionButton = styled(AdminButton)`
+  padding: ${props => `${props.theme.spacing.xs} ${props.theme.spacing.sm}`};
+  background-color: #6CB7AA;
+  color: white;
+  font-size: ${props => props.theme.typography.small.fontSize};
+
+  &:hover:not(:disabled) {
+    background-color: #5ea99c;
   }
 `;
 
 export const NotifyButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: ${props => props.theme.spacing.sm};
   border-radius: ${props => props.theme.borderRadius.full};
-  color: ${props => props.theme.colors.primary};
-  background-color: ${props => `${props.theme.colors.primary}10`};
+  color: #6CB7AA;
+  background-color: rgba(108, 183, 170, 0.1);
   transition: all ${props => props.theme.transition.default};
 
   &:hover {
-    background-color: ${props => `${props.theme.colors.primary}20`};
+    background-color: rgba(108, 183, 170, 0.2);
   }
 `;

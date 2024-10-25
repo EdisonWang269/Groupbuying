@@ -1,16 +1,23 @@
-// src/components/dialogs/ArrivalDialog/index.js
+// src/pages/admin/components/ArrivalDialog/index.js
 import React, { useState } from 'react';
 import { Truck, AlertCircle } from 'lucide-react';
+import {
+  AdminInput,
+  AdminPrimaryButton,
+  AdminSecondaryButton,
+  AdminLabel,
+  IconWrapper
+} from '../../../../components/shared/styles';
 import {
   DialogOverlay,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  Button,
+  DaysInputGroup,
+  InfoAlert,
   InputGroup
-} from '../common/styles';
-import { DaysInputGroup, InfoAlert } from './styles';
+} from './styles';
 
 const ArrivalDialog = ({ isOpen, onClose, onConfirm, product }) => {
   const [arrivalDate, setArrivalDate] = useState('');
@@ -31,28 +38,31 @@ const ArrivalDialog = ({ isOpen, onClose, onConfirm, product }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <Truck size={20} />
+            <IconWrapper>
+              <Truck size={20} />
+            </IconWrapper>
             設定到貨資訊
           </DialogTitle>
         </DialogHeader>
 
         <div>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="product-name">
             商品：{product?.name}
           </p>
 
           <InputGroup>
-            <label>到貨日期</label>
-            <input
+            <AdminLabel>到貨日期</AdminLabel>
+            <AdminInput
               type="date"
               value={arrivalDate}
               onChange={(e) => setArrivalDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
             />
           </InputGroup>
 
           <DaysInputGroup>
-            <label>領取期限（天）</label>
-            <input
+            <AdminLabel>領取期限（天）</AdminLabel>
+            <AdminInput
               type="number"
               min="1"
               max="30"
@@ -66,22 +76,23 @@ const ArrivalDialog = ({ isOpen, onClose, onConfirm, product }) => {
           </DaysInputGroup>
 
           <InfoAlert>
-            <AlertCircle size={16} />
+            <IconWrapper>
+              <AlertCircle size={16} />
+            </IconWrapper>
             <span>設定後將自動通知顧客到貨資訊</span>
           </InfoAlert>
         </div>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={onClose}>
+          <AdminSecondaryButton onClick={onClose}>
             取消
-          </Button>
-          <Button
-            variant="primary"
+          </AdminSecondaryButton>
+          <AdminPrimaryButton
             onClick={handleSubmit}
             disabled={!arrivalDate || !dueDays}
           >
             確認設定
-          </Button>
+          </AdminPrimaryButton>
         </DialogFooter>
       </DialogContent>
     </DialogOverlay>

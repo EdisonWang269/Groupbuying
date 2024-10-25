@@ -1,15 +1,17 @@
-// src/components/dialogs/ReceiveDialog/index.js
+// src/pages/admin/components/ReceiveDialog/index.js
 import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
+import {
+  AdminPrimaryButton,
+  AdminSecondaryButton,
+  IconWrapper
+} from '../../../../components/shared/styles';
 import {
   DialogOverlay,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  Button
-} from '../common/styles';
-import {
   OrderDetails,
   DetailItem,
   TotalAmount
@@ -23,7 +25,9 @@ const ReceiveDialog = ({ isOpen, onClose, onConfirm, order }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <CheckCircle2 size={20} />
+            <IconWrapper>
+              <CheckCircle2 size={20} />
+            </IconWrapper>
             確認商品領取
           </DialogTitle>
         </DialogHeader>
@@ -53,12 +57,12 @@ const ReceiveDialog = ({ isOpen, onClose, onConfirm, order }) => {
         </OrderDetails>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={onClose}>
+          <AdminSecondaryButton onClick={onClose}>
             取消
-          </Button>
-          <Button variant="primary" onClick={onConfirm}>
+          </AdminSecondaryButton>
+          <AdminPrimaryButton onClick={onConfirm}>
             確認領取
-          </Button>
+          </AdminPrimaryButton>
         </DialogFooter>
       </DialogContent>
     </DialogOverlay>

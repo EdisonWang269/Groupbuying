@@ -1,15 +1,17 @@
-// src/components/dialogs/NotifyDialog/index.js
+// src/pages/admin/components/NotifyDialog/index.js
 import React from 'react';
 import { Bell, AlertCircle } from 'lucide-react';
+import {
+  AdminPrimaryButton,
+  AdminSecondaryButton,
+  IconWrapper
+} from '../../../../components/shared/styles';
 import {
   DialogOverlay,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  Button
-} from '../common/styles';
-import {
   CustomerList,
   CustomerItem,
   NotificationInfo,
@@ -28,7 +30,9 @@ const NotifyDialog = ({ isOpen, onClose, onConfirm, product }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <Bell size={20} />
+            <IconWrapper>
+              <Bell size={20} />
+            </IconWrapper>
             發送取貨通知
           </DialogTitle>
         </DialogHeader>
@@ -58,21 +62,22 @@ const NotifyDialog = ({ isOpen, onClose, onConfirm, product }) => {
           </CustomerList>
 
           <WarningBox>
-            <AlertCircle size={16} />
+            <IconWrapper>
+              <AlertCircle size={16} />
+            </IconWrapper>
             <p>通知內容將包含：商品名稱、應付金額、取貨期限</p>
           </WarningBox>
         </div>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={onClose}>
+          <AdminSecondaryButton onClick={onClose}>
             取消
-          </Button>
-          <Button 
-            variant="primary" 
+          </AdminSecondaryButton>
+          <AdminPrimaryButton 
             onClick={() => onConfirm(unreceivedOrders)}
           >
             確認發送
-          </Button>
+          </AdminPrimaryButton>
         </DialogFooter>
       </DialogContent>
     </DialogOverlay>

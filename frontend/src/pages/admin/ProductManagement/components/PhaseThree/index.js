@@ -1,13 +1,22 @@
+// src/pages/admin/PhaseThree/index.js
 import React, { useState } from 'react';
-import { Calendar, Bell, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Bell, CheckCircle2 } from 'lucide-react';
 import {
-  Container,
+  AdminContainer,
+  AdminHeader,
+  AdminHeaderBackground,
+  AdminHeaderContent,
+  AdminTitle,
+  AdminContentContainer,
+  StatusTag,
+  IconWrapper
+} from '../../../components/shared/styles';
+import {
   ProductCard,
   ProductHeader,
   ProductInfo,
   ProductTitle,
   InfoRow,
-  StatusTag,
   ProgressBar,
   ProgressText,
   OrdersTable,
@@ -15,6 +24,7 @@ import {
   TableRow,
   ActionButton,
   NotifyButton,
+  TableContainer
 } from './styles';
 
 import ReceiveDialog from '../dialogs/ReceiveDialog';
@@ -88,7 +98,6 @@ const PhaseThree = () => {
 
   const handleConfirmNotify = async (unreceivedOrders) => {
     try {
-      // 對每個未領取的顧客發送通知
       await fetch(`/api/products/${selectedProduct.id}/orders/notify`, {
         method: 'POST',
         headers: {
@@ -109,98 +118,115 @@ const PhaseThree = () => {
   };
 
   return (
-    <Container>
-      {products.map(product => (
-        <ProductCard key={product.id}>
-          <ProductHeader>
-            <div>
-              <ProductTitle>{product.name}</ProductTitle>
-              <InfoRow>
-                <span>單價：${product.price}</span>
-                <div className="flex items-center gap-2">
-                  <Calendar size={16} />
-                  <span>到貨日期：{product.arrival_date}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar size={16} />
-                  <span>領取期限：{product.due_date}</span>
-                </div>
-              </InfoRow>
-            </div>
-            <NotifyButton
-              onClick={() => handleNotify(product)}
-              title="通知未領取顧客"
-            >
-              <Bell size={20} />
-            </NotifyButton>
-          </ProductHeader>
+    <AdminContainer>
+      <AdminHeader>
+        <AdminHeaderBackground>
+          <div className="circle circle-1" />
+          <div className="circle circle-2" />
+          <div className="circle circle-3" />
+        </AdminHeaderBackground>
+        <AdminHeaderContent>
+          <AdminTitle>第三階段商品</AdminTitle>
+        </AdminHeaderContent>
+      </AdminHeader>
 
-          <ProductInfo>
-            <div className="mb-4">
-              <ProgressText>
-                領取進度：{product.received_orders} / {product.total_orders}
-              </ProgressText>
-              <ProgressBar 
-                progress={calculateProgress(product.received_orders, product.total_orders)} 
-              />
-            </div>
+      <AdminContentContainer>
+        {products.map(product => (
+          <ProductCard key={product.id}>
+            <ProductHeader>
+              <div>
+                <ProductTitle>{product.name}</ProductTitle>
+                <InfoRow>
+                  <span>單價：${product.price}</span>
+                  <div className="date-info">
+                    <IconWrapper>
+                      <Calendar size={16} />
+                    </IconWrapper>
+                    <span>到貨日期：{product.arrival_date}</span>
+                  </div>
+                  <div className="date-info">
+                    <IconWrapper>
+                      <Calendar size={16} />
+                    </IconWrapper>
+                    <span>領取期限：{product.due_date}</span>
+                  </div>
+                </InfoRow>
+              </div>
+              <NotifyButton
+                onClick={() => handleNotify(product)}
+                title="通知未領取顧客"
+              >
+                <Bell size={20} />
+              </NotifyButton>
+            </ProductHeader>
 
-            <OrdersTable>
-              <thead>
-                <TableHeader>
-                  <th>顧客姓名</th>
-                  <th>電話</th>
-                  <th>數量</th>
-                  <th>金額</th>
-                  <th>狀態</th>
-                  <th>操作</th>
-                </TableHeader>
-              </thead>
-              <tbody>
-                {product.orders.map(order => (
-                  <TableRow key={order.id}>
-                    <td>{order.customer_name}</td>
-                    <td>{order.phone}</td>
-                    <td>{order.quantity}</td>
-                    <td>${order.total_price}</td>
-                    <td>
-                      <StatusTag status={order.status}>
-                        {order.status === 'received' ? '已領取' : '未領取'}
-                      </StatusTag>
-                    </td>
-                    <td>
-                      {order.status === 'pending' && (
-                        <ActionButton
-                          onClick={() => handleReceive(product, order)}
-                        >
-                          標記已領取
-                        </ActionButton>
-                      )}
-                    </td>
-                  </TableRow>
-                ))}
-              </tbody>
-            </OrdersTable>
-          </ProductInfo>
-        </ProductCard>
-      ))}
+            <ProductInfo>
+              <div className="progress-section">
+                <ProgressText>
+                  領取進度：{product.received_orders} / {product.total_orders}
+                </ProgressText>
+                <ProgressBar 
+                  progress={calculateProgress(product.received_orders, product.total_orders)} 
+                />
+              </div>
 
-      {/* 領取確認對話框 */}
-      <ReceiveDialog
-        isOpen={showReceiveDialog}
-        onClose={() => setShowReceiveDialog(false)}
-        onConfirm={handleConfirmReceive}
-        order={selectedOrder}
-      />
+              <TableContainer>
+                <OrdersTable>
+                  <thead>
+                    <TableHeader>
+                      <th>顧客姓名</th>
+                      <th>電話</th>
+                      <th>數量</th>
+                      <th>金額</th>
+                      <th>狀態</th>
+                      <th>操作</th>
+                    </TableHeader>
+                  </thead>
+                  <tbody>
+                    {product.orders.map(order => (
+                      <TableRow key={order.id}>
+                        <td>{order.customer_name}</td>
+                        <td>{order.phone}</td>
+                        <td>{order.quantity}</td>
+                        <td>${order.total_price}</td>
+                        <td>
+                          <StatusTag status={order.status === 'received' ? 'success' : 'warning'}>
+                            {order.status === 'received' ? '已領取' : '未領取'}
+                          </StatusTag>
+                        </td>
+                        <td>
+                          {order.status === 'pending' && (
+                            <ActionButton
+                              onClick={() => handleReceive(product, order)}
+                            >
+                              標記已領取
+                            </ActionButton>
+                          )}
+                        </td>
+                      </TableRow>
+                    ))}
+                  </tbody>
+                </OrdersTable>
+              </TableContainer>
+            </ProductInfo>
+          </ProductCard>
+        ))}
 
-      {/* 通知確認對話框 */}
-      <NotifyDialog
-        isOpen={showNotifyDialog}
-        onClose={() => setShowNotifyDialog(false)}
-        onConfirm={handleConfirmNotify}
-        product={selectedProduct}
-      />
-    </Container>
+        <ReceiveDialog
+          isOpen={showReceiveDialog}
+          onClose={() => setShowReceiveDialog(false)}
+          onConfirm={handleConfirmReceive}
+          order={selectedOrder}
+        />
+
+        <NotifyDialog
+          isOpen={showNotifyDialog}
+          onClose={() => setShowNotifyDialog(false)}
+          onConfirm={handleConfirmNotify}
+          product={selectedProduct}
+        />
+      </AdminContentContainer>
+    </AdminContainer>
   );
 };
 

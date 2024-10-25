@@ -1,16 +1,27 @@
+// src/pages/admin/PhaseTwo/index.js
 import React, { useState, useEffect } from 'react';
 import { Calendar, Truck, Package } from 'lucide-react';
 import {
-  Container,
+  AdminContainer,
+  AdminHeader,
+  AdminHeaderBackground,
+  AdminHeaderContent,
+  AdminTitle,
+  AdminContentContainer,
+  StatusTag,
+  IconWrapper
+} from '../../../components/shared/styles';
+import {
   ProductCard,
   ProductInfo,
   ProductTitle,
   InfoRow,
-  StatusTag,
   SetArrivalButton,
   OrderSummary,
   OrderSummaryTitle,
   OrderSummaryContent,
+  OrderAmount,
+  OrderCount
 } from './styles';
 import ArrivalDialog from '../dialogs/ArrivalDialog';
 
@@ -38,7 +49,6 @@ const PhaseTwo = () => {
     }
   ];
 
-  // 當商品結單時，自動記錄訂購數量
   useEffect(() => {
     const updatePurchaseQuantity = async (productId, quantity) => {
       try {
@@ -56,7 +66,6 @@ const PhaseTwo = () => {
       }
     };
 
-    // 在商品進入這個階段時執行
     products.forEach(product => {
       updatePurchaseQuantity(product.id, product.total_orders);
     });
@@ -69,7 +78,6 @@ const PhaseTwo = () => {
 
   const handleConfirmArrival = async (arrivalData) => {
     try {
-      // 調用 API 設定到貨資訊
       await fetch(`/api/products/${selectedProduct.id}/arrival`, {
         method: 'PUT',
         headers: {
@@ -90,57 +98,73 @@ const PhaseTwo = () => {
   };
 
   return (
-    <Container>
-      {products.map(product => (
-        <ProductCard key={product.id}>
-          <ProductInfo>
-            <div className="flex justify-between items-start">
-              <ProductTitle>{product.name}</ProductTitle>
-              <StatusTag>等待到貨</StatusTag>
-            </div>
-            
-            <InfoRow>
-              <span>單價：${product.price}</span>
-              <span>總訂購數：{product.total_orders}</span>
-              <span>總金額：${product.total_amount}</span>
-            </InfoRow>
-            
-            <InfoRow>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
-                <span>結單日期：{product.statement_date}</span>
+    <AdminContainer>
+      <AdminHeader>
+        <AdminHeaderBackground>
+          <div className="circle circle-1" />
+          <div className="circle circle-2" />
+          <div className="circle circle-3" />
+        </AdminHeaderBackground>
+        <AdminHeaderContent>
+          <AdminTitle>第二階段商品</AdminTitle>
+        </AdminHeaderContent>
+      </AdminHeader>
+
+      <AdminContentContainer>
+        {products.map(product => (
+          <ProductCard key={product.id}>
+            <ProductInfo>
+              <div className="header">
+                <ProductTitle>{product.name}</ProductTitle>
+                <StatusTag status="warning">等待到貨</StatusTag>
               </div>
-            </InfoRow>
+              
+              <InfoRow>
+                <span>單價：${product.price}</span>
+                <OrderCount>總訂購數：{product.total_orders}</OrderCount>
+                <OrderAmount>總金額：${product.total_amount}</OrderAmount>
+              </InfoRow>
+              
+              <InfoRow>
+                <IconWrapper>
+                  <Calendar size={16} />
+                </IconWrapper>
+                <span>結單日期：{product.statement_date}</span>
+              </InfoRow>
 
-            <OrderSummary>
-              <OrderSummaryTitle>
-                <Package size={16} />
-                訂單摘要
-              </OrderSummaryTitle>
-              <OrderSummaryContent>
-                <div>總訂購數量：{product.total_orders} 件</div>
-                <div>總訂購金額：${product.total_amount}</div>
-              </OrderSummaryContent>
-            </OrderSummary>
+              <OrderSummary>
+                <OrderSummaryTitle>
+                  <IconWrapper>
+                    <Package size={16} />
+                  </IconWrapper>
+                  訂單摘要
+                </OrderSummaryTitle>
+                <OrderSummaryContent>
+                  <div>總訂購數量：{product.total_orders} 件</div>
+                  <div>總訂購金額：${product.total_amount}</div>
+                </OrderSummaryContent>
+              </OrderSummary>
 
-            <SetArrivalButton
-              onClick={() => handleSetArrival(product)}
-            >
-              <Truck size={18} />
-              設定到貨資訊
-            </SetArrivalButton>
-          </ProductInfo>
-        </ProductCard>
-      ))}
+              <SetArrivalButton
+                onClick={() => handleSetArrival(product)}
+              >
+                <IconWrapper>
+                  <Truck size={18} />
+                </IconWrapper>
+                設定到貨資訊
+              </SetArrivalButton>
+            </ProductInfo>
+          </ProductCard>
+        ))}
 
-      {/* 設定到貨資訊對話框 */}
-      <ArrivalDialog
-        isOpen={showArrivalDialog}
-        onClose={() => setShowArrivalDialog(false)}
-        onConfirm={handleConfirmArrival}
-        product={selectedProduct}
-      />
-    </Container>
+        <ArrivalDialog
+          isOpen={showArrivalDialog}
+          onClose={() => setShowArrivalDialog(false)}
+          onConfirm={handleConfirmArrival}
+          product={selectedProduct}
+        />
+      </AdminContentContainer>
+    </AdminContainer>
   );
 };
 

@@ -1,7 +1,16 @@
+// src/pages/admin/PhaseFour/index.js
 import React, { useState } from 'react';
 import { Calendar, AlertCircle, Package, UserX } from 'lucide-react';
 import {
-  Container,
+  AdminContainer,
+  AdminHeader,
+  AdminHeaderBackground,
+  AdminHeaderContent,
+  AdminTitle,
+  AdminContentContainer,
+  IconWrapper
+} from '../../../components/shared/styles';
+import {
   ProductCard,
   ProductHeader,
   ProductInfo,
@@ -60,14 +69,13 @@ const PhaseFour = () => {
 
   const confirmUpdateBlacklist = async () => {
     try {
-      // 對每個未領取的顧客更新黑名單狀態
       const updatePromises = selectedProduct.unreceived_orders.map(order =>
         fetch(`/api/users/${order.userid}/blacklist`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ operation: 1 }) // 增加黑名單次數
+          body: JSON.stringify({ operation: 1 })
         })
       );
 
@@ -82,90 +90,114 @@ const PhaseFour = () => {
   };
 
   return (
-    <Container>
-      {products.map(product => (
-        <ProductCard key={product.id}>
-          <ProductHeader>
-            <ProductTitle>{product.name}</ProductTitle>
-            <CompletionStats>
-              <StatItem>
-                <Package size={16} />
-                <span>總訂單：{product.total_orders}</span>
-              </StatItem>
-              <StatItem success>
-                已領取：{product.received_orders}
-              </StatItem>
-              <StatItem error>
-                未領取：{product.unreceived_orders.length}
-              </StatItem>
-            </CompletionStats>
-          </ProductHeader>
+    <AdminContainer>
+      <AdminHeader>
+        <AdminHeaderBackground>
+          <div className="circle circle-1" />
+          <div className="circle circle-2" />
+          <div className="circle circle-3" />
+        </AdminHeaderBackground>
+        <AdminHeaderContent>
+          <AdminTitle>第四階段商品</AdminTitle>
+        </AdminHeaderContent>
+      </AdminHeader>
 
-          <ProductInfo>
-            <InfoRow>
-              <span>單價：${product.price}</span>
-              <span>總營業額：${product.total_amount}</span>
-            </InfoRow>
-            <InfoRow>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
-                <span>到貨日期：{product.arrival_date}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
-                <span>領取期限：{product.due_date}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
-                <span>完成日期：{product.completion_date}</span>
-              </div>
-            </InfoRow>
+      <AdminContentContainer>
+        {products.map(product => (
+          <ProductCard key={product.id}>
+            <ProductHeader>
+              <ProductTitle>{product.name}</ProductTitle>
+              <CompletionStats>
+                <StatItem>
+                  <IconWrapper>
+                    <Package size={16} />
+                  </IconWrapper>
+                  <span>總訂單：{product.total_orders}</span>
+                </StatItem>
+                <StatItem success>
+                  已領取：{product.received_orders}
+                </StatItem>
+                <StatItem error>
+                  未領取：{product.unreceived_orders.length}
+                </StatItem>
+              </CompletionStats>
+            </ProductHeader>
 
-            {product.unreceived_orders.length > 0 && (
-              <UnreceivedSection>
-                <UnreceivedHeader>
-                  <div className="flex items-center gap-2 text-red-600">
-                    <AlertCircle size={20} />
-                    <h3>未領取顧客名單</h3>
-                  </div>
-                  <BlacklistButton
-                    onClick={() => handleUpdateBlacklist(product)}
-                  >
-                    <UserX size={16} />
-                    更新黑名單
-                  </BlacklistButton>
-                </UnreceivedHeader>
+            <ProductInfo>
+              <InfoRow>
+                <span>單價：${product.price}</span>
+                <span>總營業額：${product.total_amount}</span>
+              </InfoRow>
+              <InfoRow>
+                <div className="date-info">
+                  <IconWrapper>
+                    <Calendar size={16} />
+                  </IconWrapper>
+                  <span>到貨日期：{product.arrival_date}</span>
+                </div>
+                <div className="date-info">
+                  <IconWrapper>
+                    <Calendar size={16} />
+                  </IconWrapper>
+                  <span>領取期限：{product.due_date}</span>
+                </div>
+                <div className="date-info">
+                  <IconWrapper>
+                    <Calendar size={16} />
+                  </IconWrapper>
+                  <span>完成日期：{product.completion_date}</span>
+                </div>
+              </InfoRow>
 
-                <UnreceivedList>
-                  {product.unreceived_orders.map((order, index) => (
-                    <UnreceivedItem key={index}>
-                      <div>
-                        <div className="font-medium">{order.customer_name}</div>
-                        <div className="text-sm text-gray-500">{order.phone}</div>
-                      </div>
-                      <div className="text-right">
-                        <div>訂購數量：{order.quantity}</div>
-                        <div className="text-sm text-red-600">
-                          未取金額：${order.total_price}
+              {product.unreceived_orders.length > 0 && (
+                <UnreceivedSection>
+                  <UnreceivedHeader>
+                    <div className="warning-title">
+                      <IconWrapper>
+                        <AlertCircle size={20} />
+                      </IconWrapper>
+                      <h3>未領取顧客名單</h3>
+                    </div>
+                    <BlacklistButton
+                      onClick={() => handleUpdateBlacklist(product)}
+                    >
+                      <IconWrapper>
+                        <UserX size={16} />
+                      </IconWrapper>
+                      更新黑名單
+                    </BlacklistButton>
+                  </UnreceivedHeader>
+
+                  <UnreceivedList>
+                    {product.unreceived_orders.map((order, index) => (
+                      <UnreceivedItem key={index}>
+                        <div className="customer-info">
+                          <div className="name">{order.customer_name}</div>
+                          <div className="phone">{order.phone}</div>
                         </div>
-                      </div>
-                    </UnreceivedItem>
-                  ))}
-                </UnreceivedList>
-              </UnreceivedSection>
-            )}
-          </ProductInfo>
-        </ProductCard>
-      ))}
+                        <div className="order-info">
+                          <div>訂購數量：{order.quantity}</div>
+                          <div className="amount">
+                            未取金額：${order.total_price}
+                          </div>
+                        </div>
+                      </UnreceivedItem>
+                    ))}
+                  </UnreceivedList>
+                </UnreceivedSection>
+              )}
+            </ProductInfo>
+          </ProductCard>
+        ))}
 
-      {/* 黑名單更新確認對話框 */}
-      <BlacklistDialog
-        isOpen={showBlacklistDialog}
-        onClose={() => setShowBlacklistDialog(false)}
-        onConfirm={confirmUpdateBlacklist}
-        product={selectedProduct}
-      />
-    </Container>
+        <BlacklistDialog
+          isOpen={showBlacklistDialog}
+          onClose={() => setShowBlacklistDialog(false)}
+          onConfirm={confirmUpdateBlacklist}
+          product={selectedProduct}
+        />
+      </AdminContentContainer>
+    </AdminContainer>
   );
 };
 

@@ -1,19 +1,33 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import AdminLayout from '../layouts/admin/AdminLayout';
-import ProductManagement from '../pages/admin/ProductManagement';
+
+// 管理者頁面
+import ProductPhaseOne from '../pages/admin/ProductManagement/components/PhaseOne';
+import ProductPhaseTwo from '../pages/admin/ProductManagement/components/PhaseTwo';
+import ProductPhaseThree from '../pages/admin/ProductManagement/components/PhaseThree';
+import ProductPhaseFour from '../pages/admin/ProductManagement/components/PhaseFour';
+import CreateProduct from '../pages/admin/CreateProduct';
+import OrderSearch from '../pages/admin/OrderSearch';
 
 const AdminRoutes = () => {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
-        {/* 管理者首頁直接導向商品管理 */}
-        <Route index element={<Navigate to="products" replace />} />
+        {/* 商品管理路由 */}
+        <Route path="products/phase1" element={<ProductPhaseOne />} />
+        <Route path="products/phase2" element={<ProductPhaseTwo />} />
+        <Route path="products/phase3" element={<ProductPhaseThree />} />
+        <Route path="products/phase4" element={<ProductPhaseFour />} />
         
-        {/* 商品管理頁面 */}
-        <Route path="products" element={<ProductManagement />} />
+        {/* 上架商品路由 */}
+        <Route path="create" element={<CreateProduct />} />
         
-        {/* 可以在這裡添加更多管理者頁面路由 */}
+        {/* 訂單查詢路由 */}
+        <Route path="orders" element={<OrderSearch />} />
+
+        {/* 預設路由 */}
+        <Route index element={<ProductPhaseOne />} />
       </Route>
     </Routes>
   );

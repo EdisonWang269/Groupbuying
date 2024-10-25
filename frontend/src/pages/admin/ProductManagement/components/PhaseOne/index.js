@@ -1,13 +1,24 @@
+// src/pages/admin/PhaseOne/index.js
 import React, { useState } from 'react';
 import { Edit, Calendar } from 'lucide-react';
 import {
-  Container,
+  AdminContainer,
+  AdminHeader,
+  AdminHeaderBackground,
+  AdminHeaderContent,
+  AdminTitle,
+  AdminContentContainer,
+  StatusTag,
+  IconWrapper
+} from '../../../components/shared/styles';
+import {
   ProductCard,
   ProductInfo,
   ProductTitle,
   InfoRow,
   EditButton,
-  StatusTag,
+  OrderAmount,
+  OrderCount
 } from './styles';
 import DateDialog from '../dialogs/DateDialog';
 
@@ -65,25 +76,38 @@ const PhaseOne = () => {
   };
 
   return (
-    <Container>
-      {products.map(product => (
-        <ProductCard key={product.id}>
-          <ProductInfo>
-            <ProductTitle>{product.name}</ProductTitle>
-            <InfoRow>
-              <span>單價：${product.price}</span>
-              <span>目前訂購數：{product.current_orders}</span>
-              <span>總金額：${product.total_amount}</span>
-            </InfoRow>
-            <InfoRow>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
+    <AdminContainer>
+      <AdminHeader>
+        <AdminHeaderBackground>
+          <div className="circle circle-1" />
+          <div className="circle circle-2" />
+          <div className="circle circle-3" />
+        </AdminHeaderBackground>
+        <AdminHeaderContent>
+          <AdminTitle>第一階段商品</AdminTitle>
+        </AdminHeaderContent>
+      </AdminHeader>
+
+      <AdminContentContainer>
+        {products.map(product => (
+          <ProductCard key={product.id}>
+            <ProductInfo>
+              <ProductTitle>{product.name}</ProductTitle>
+              <InfoRow>
+                <span>單價：${product.price}</span>
+                <OrderCount>目前訂購數：{product.current_orders}</OrderCount>
+                <OrderAmount>總金額：${product.total_amount}</OrderAmount>
+              </InfoRow>
+              <InfoRow>
+                <IconWrapper>
+                  <Calendar size={16} />
+                </IconWrapper>
                 <span>上架日期：{product.launch_date}</span>
-              </div>
-            </InfoRow>
-            <InfoRow>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
+              </InfoRow>
+              <InfoRow>
+                <IconWrapper>
+                  <Calendar size={16} />
+                </IconWrapper>
                 <span>結單日期：{product.statement_date}</span>
                 <EditButton
                   onClick={() => handleEditDate(product)}
@@ -91,22 +115,21 @@ const PhaseOne = () => {
                 >
                   <Edit size={16} />
                 </EditButton>
-              </div>
-            </InfoRow>
-          </ProductInfo>
-          <StatusTag>團購中</StatusTag>
-        </ProductCard>
-      ))}
+              </InfoRow>
+            </ProductInfo>
+            <StatusTag status="active">團購中</StatusTag>
+          </ProductCard>
+        ))}
 
-      {/* 修改結單日期對話框 */}
-      <DateDialog
-        isOpen={showDateDialog}
-        onClose={() => setShowDateDialog(false)}
-        onConfirm={handleUpdateDate}
-        product={selectedProduct}
-        currentDate={selectedProduct?.statement_date}
-      />
-    </Container>
+        <DateDialog
+          isOpen={showDateDialog}
+          onClose={() => setShowDateDialog(false)}
+          onConfirm={handleUpdateDate}
+          product={selectedProduct}
+          currentDate={selectedProduct?.statement_date}
+        />
+      </AdminContentContainer>
+    </AdminContainer>
   );
 };
 

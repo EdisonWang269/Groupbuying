@@ -1,10 +1,5 @@
+// src/pages/admin/PhaseOne/styles.js
 import styled from '@emotion/styled';
-
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${props => props.theme.spacing.md};
-`;
 
 export const ProductCard = styled.div`
   background-color: ${props => props.theme.colors.white};
@@ -15,6 +10,13 @@ export const ProductCard = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   position: relative;
+  margin-bottom: ${props => props.theme.spacing.md};
+  transition: all ${props => props.theme.transition.default};
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.md};
+  }
 `;
 
 export const ProductInfo = styled.div`
@@ -23,7 +25,7 @@ export const ProductInfo = styled.div`
 
 export const ProductTitle = styled.h2`
   font-size: ${props => props.theme.typography.h2.fontSize};
-  font-weight: ${props => props.theme.typography.h2.fontWeight};
+  font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: ${props => props.theme.spacing.md};
 `;
@@ -44,22 +46,23 @@ export const InfoRow = styled.div`
 export const EditButton = styled.button`
   padding: ${props => props.theme.spacing.xs};
   border-radius: ${props => props.theme.borderRadius.sm};
-  color: ${props => props.theme.colors.primary};
+  color: #6CB7AA;
   transition: all ${props => props.theme.transition.default};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: ${props => `${props.theme.colors.primary}10`};
+    background-color: rgba(108, 183, 170, 0.1);
   }
 `;
 
-export const StatusTag = styled.span`
-  position: absolute;
-  top: ${props => props.theme.spacing.md};
-  right: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
-  background-color: ${props => `${props.theme.colors.primary}10`};
-  color: ${props => props.theme.colors.primary};
-  border-radius: ${props => props.theme.borderRadius.full};
-  font-size: ${props => props.theme.typography.small.fontSize};
+export const OrderAmount = styled.span`
+  color: #6CB7AA;
+  font-weight: 500;
+`;
+
+export const OrderCount = styled.span`
+  color: ${props => props.theme.colors.text};
   font-weight: 500;
 `;

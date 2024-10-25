@@ -1,16 +1,23 @@
-// src/components/dialogs/DateDialog/index.js
+// src/pages/admin/components/DateDialog/index.js
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
+import {
+  AdminInput,
+  AdminLabel,
+  IconWrapper,
+  AdminPrimaryButton,
+  AdminSecondaryButton
+} from '../../../../components/shared/styles';
+
 import {
   DialogOverlay,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  Button,
+  DateBox,
   InputGroup
-} from '../common/styles';
-import { DateBox } from './styles';
+} from './styles';
 
 const DateDialog = ({ isOpen, onClose, onConfirm, product, currentDate }) => {
   const [newDate, setNewDate] = useState('');
@@ -27,7 +34,9 @@ const DateDialog = ({ isOpen, onClose, onConfirm, product, currentDate }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <Calendar size={20} />
+            <IconWrapper>
+              <Calendar size={20} />
+            </IconWrapper>
             修改結單日期
           </DialogTitle>
         </DialogHeader>
@@ -38,13 +47,13 @@ const DateDialog = ({ isOpen, onClose, onConfirm, product, currentDate }) => {
           </p>
           
           <DateBox>
-            <p className="text-sm text-gray-600">目前結單日期：</p>
-            <p className="font-medium">{currentDate}</p>
+            <p>目前結單日期：</p>
+            <p className="date">{currentDate}</p>
           </DateBox>
 
           <InputGroup>
-            <label>新結單日期</label>
-            <input
+            <AdminLabel>新結單日期</AdminLabel>
+            <AdminInput
               type="date"
               value={newDate}
               onChange={(e) => setNewDate(e.target.value)}
@@ -54,16 +63,15 @@ const DateDialog = ({ isOpen, onClose, onConfirm, product, currentDate }) => {
         </div>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={onClose}>
+          <AdminSecondaryButton onClick={onClose}>
             取消
-          </Button>
-          <Button 
-            variant="primary" 
+          </AdminSecondaryButton>
+          <AdminPrimaryButton 
             onClick={handleSubmit}
             disabled={!newDate}
           >
             確認修改
-          </Button>
+          </AdminPrimaryButton>
         </DialogFooter>
       </DialogContent>
     </DialogOverlay>
