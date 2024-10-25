@@ -2,14 +2,15 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
-import OrderModal from './components/OrderModal';
+import OrderModal from '../components/OrderModal';
 import {
   Container,
   Header,
   HeaderBackground,
-  HeaderContent,
+  StyledHeaderContent,
   BackButton,
   HeaderTitle,
+  MainContent,
   Content,
   ImageWrapper,
   Image,
@@ -21,8 +22,7 @@ import {
   StatementDate,
   Description,
   DescriptionTitle,
-  DescriptionText,
-  MainContent
+  DescriptionText
 } from './styles';
 
 const ProductDetail = () => {
@@ -40,18 +40,18 @@ const ProductDetail = () => {
 
   return (
     <Container>
-      <Header>
+      <Header sticky>
         <HeaderBackground>
           <div className="circle circle-1" />
           <div className="circle circle-2" />
           <div className="circle circle-3" />
         </HeaderBackground>
-        <HeaderContent>
+        <StyledHeaderContent>
           <BackButton onClick={() => navigate(-1)}>
             <ChevronLeft size={24} color="white" />
           </BackButton>
           <HeaderTitle>商品詳情</HeaderTitle>
-        </HeaderContent>
+        </StyledHeaderContent>
       </Header>
       
       <MainContent>
@@ -95,7 +95,7 @@ const ProductDetail = () => {
               </button>
             </QuantitySelector>
             
-            <OrderButton onClick={() => setShowOrderModal(true)}>
+            <OrderButton primary onClick={() => setShowOrderModal(true)}>
               立即下單
             </OrderButton>
           </ProductInfo>

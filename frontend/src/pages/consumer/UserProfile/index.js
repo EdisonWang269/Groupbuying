@@ -1,6 +1,5 @@
 // src/pages/UserProfile/index.js
 import React, { useState } from 'react';
-import { Camera } from 'lucide-react';
 import {
   Container,
   Header,
@@ -11,7 +10,6 @@ import {
   AvatarContainer,
   AvatarWrapper,
   Avatar,
-  CameraButton,
   InfoContainer,
   InfoGroup,
   Label,
@@ -45,7 +43,7 @@ const UserProfile = () => {
           <div className="circle circle-2" />
           <div className="circle circle-3" />
         </HeaderBackground>
-        <HeaderContent>
+        <HeaderContent direction="column" justify="center">
           <Title>個人資料</Title>
         </HeaderContent>
       </Header>
@@ -61,9 +59,6 @@ const UserProfile = () => {
                 e.target.src = '/default-avatar-placeholder.png';
               }}
             />
-            <CameraButton>
-              <Camera size={20} />
-            </CameraButton>
           </AvatarWrapper>
         </AvatarContainer>
 
@@ -88,7 +83,7 @@ const UserProfile = () => {
             />
           </InfoGroup>
 
-          <SaveButton onClick={handleSave}>
+          <SaveButton primary onClick={handleSave}>
             儲存變更
           </SaveButton>
         </InfoContainer>

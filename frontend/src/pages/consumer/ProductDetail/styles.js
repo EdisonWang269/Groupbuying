@@ -1,103 +1,39 @@
 // src/pages/ProductDetail/styles.js
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
+import { 
+  PageContainer, 
+  PageHeader, 
+  HeaderBackground, 
+  HeaderContent,
+  Button,
+  Card
+} from '../components/shared/styles';
 
-const moveCircle = keyframes`
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(10px, -10px);
-  }
-`;
+// 基礎容器
+export const Container = styled(PageContainer)``;
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-export const Container = styled.div`
-  min-height: 100vh;
-  background: #f0f7f5;
-  padding-bottom: 60px;
-  position: relative;
-`;
-
-export const Header = styled.header`
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #6CB7AA;
+// 頭部區域
+export const Header = styled(PageHeader)`
   padding: ${props => props.theme.spacing.md} 0;
 `;
 
-export const HeaderBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  pointer-events: none;
-
-  .circle {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .circle-1 {
-    width: 100px;
-    height: 100px;
-    top: -20px;
-    right: 10%;
-    animation: ${moveCircle} 7s ease-in-out infinite;
-  }
-
-  .circle-2 {
-    width: 60px;
-    height: 60px;
-    top: 40px;
-    right: 20%;
-    animation: ${moveCircle} 5s ease-in-out infinite reverse;
-  }
-
-  .circle-3 {
-    width: 40px;
-    height: 40px;
-    top: 60px;
-    right: 25%;
-    animation: ${moveCircle} 6s ease-in-out infinite;
-  }
-`;
-
-export const HeaderContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
+// 修改頭部內容布局
+export const StyledHeaderContent = styled(HeaderContent)`
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: ${props => props.theme.spacing.md};
+  align-items: center;
   padding: 0 ${props => props.theme.spacing.md};
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 1;
+  max-width: 800px;
 `;
 
-export const BackButton = styled.button`
+export const BackButton = styled(Button)`
   background: none;
-  border: none;
   padding: ${props => props.theme.spacing.xs};
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform ${props => props.theme.transition.default};
-
+  grid-column: 1;
+  
   &:hover {
+    background: none;
     transform: translateX(-2px);
   }
 `;
@@ -105,16 +41,20 @@ export const BackButton = styled.button`
 export const HeaderTitle = styled.h2`
   font-size: ${props => props.theme.typography.h2.fontSize};
   color: white;
-  margin: 0 auto;
+  margin: 0;
+  text-align: center;
+  grid-column: 2;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
+// 主要內容區
 export const MainContent = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  animation: ${fadeIn} 0.5s ease-out;
+  animation: ${props => props.theme.animations?.fadeIn || 'none'} 0.5s ease-out;
 `;
 
+// 圖片區域
 export const ImageWrapper = styled.div`
   width: 100%;
   height: 300px;
@@ -142,6 +82,7 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
+// 內容區域
 export const Content = styled.div`
   margin: -${props => props.theme.spacing.xl} ${props => props.theme.spacing.md} 0;
   position: relative;
@@ -153,11 +94,8 @@ export const Content = styled.div`
   }
 `;
 
-export const ProductInfo = styled.div`
-  background: white;
-  border-radius: ${props => props.theme.borderRadius.lg};
+export const ProductInfo = styled(Card)`
   padding: ${props => props.theme.spacing.xl};
-  box-shadow: ${props => props.theme.shadows.md};
 `;
 
 export const ProductTitle = styled.h1`
@@ -165,6 +103,8 @@ export const ProductTitle = styled.h1`
   color: ${props => props.theme.colors.text};
   margin: 0;
   margin-bottom: ${props => props.theme.spacing.sm};
+  font-weight: 600;
+  line-height: 1.4;
 `;
 
 export const Price = styled.p`
@@ -182,6 +122,7 @@ export const StatementDate = styled.p`
   border-bottom: 1px solid ${props => props.theme.colors.border};
 `;
 
+// 商品描述區
 export const Description = styled.div`
   margin: ${props => props.theme.spacing.lg} 0;
 `;
@@ -190,14 +131,17 @@ export const DescriptionTitle = styled.h4`
   font-size: 1.1rem;
   color: ${props => props.theme.colors.text};
   margin-bottom: ${props => props.theme.spacing.md};
+  font-weight: 600;
 `;
 
 export const DescriptionText = styled.p`
   line-height: 1.6;
   color: ${props => props.theme.colors.textLight};
   white-space: pre-line;
+  font-size: ${props => props.theme.typography.body.fontSize};
 `;
 
+// 數量選擇器
 export const QuantitySelector = styled.div`
   display: flex;
   align-items: center;
@@ -222,12 +166,18 @@ export const QuantitySelector = styled.div`
     &:hover:not(:disabled) {
       background: #6CB7AA;
       color: white;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     &:disabled {
       border-color: ${props => props.theme.colors.border};
       color: ${props => props.theme.colors.border};
       cursor: not-allowed;
+      background: ${props => props.theme.colors.backgroundLight};
     }
   }
 
@@ -237,25 +187,71 @@ export const QuantitySelector = styled.div`
     font-size: 1.2rem;
     color: ${props => props.theme.colors.text};
     user-select: none;
+    font-weight: 500;
   }
 `;
 
-export const OrderButton = styled.button`
+// 訂購按鈕
+export const OrderButton = styled(Button)`
   width: 100%;
   padding: ${props => props.theme.spacing.md};
-  background: #6CB7AA;
-  color: white;
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.full};
   font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all ${props => props.theme.transition.default};
-  box-shadow: ${props => props.theme.shadows.sm};
+  font-weight: 600;
+  height: 48px;
 
-  &:hover {
-    background: #5BA99C;
-    transform: translateY(-1px);
-    box-shadow: ${props => props.theme.shadows.md};
+  &:disabled {
+    background: ${props => props.theme.colors.border};
+    cursor: not-allowed;
+    transform: none;
   }
 `;
+
+// Badge 樣式
+export const Badge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  border-radius: ${props => props.theme.borderRadius.full};
+  font-size: ${props => props.theme.typography.small.fontSize};
+  font-weight: 500;
+  
+  ${props => {
+    switch (props.type) {
+      case 'success':
+        return `
+          background-color: ${props.theme.colors.success}15;
+          color: ${props.theme.colors.success};
+        `;
+      case 'warning':
+        return `
+          background-color: ${props.theme.colors.warning}15;
+          color: ${props.theme.colors.warning};
+        `;
+      default:
+        return `
+          background-color: ${props.theme.colors.primary}15;
+          color: ${props.theme.colors.primary};
+        `;
+    }
+  }}
+`;
+
+// 分享按鈕
+export const ShareButton = styled(Button)`
+  position: absolute;
+  top: ${props => props.theme.spacing.md};
+  right: ${props => props.theme.spacing.md};
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: ${props => props.theme.borderRadius.full};
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  
+  &:hover {
+    background: white;
+  }
+`;
+
+// 導出共享組件
+export { HeaderBackground };

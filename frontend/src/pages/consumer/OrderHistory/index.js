@@ -67,22 +67,21 @@ const OrderHistory = () => {
           <div className="circle circle-2" />
           <div className="circle circle-3" />
         </HeaderBackground>
-        <HeaderContent>
+        <HeaderContent direction="column" gap="24px">
           <Title>我的訂單</Title>
+          <TabsContainer>
+            {['所有清單', '未完成', '已完成'].map(tab => (
+              <TabButton 
+                key={tab}
+                isActive={selectedTab === tab}
+                onClick={() => setSelectedTab(tab)}
+              >
+                {tab}
+              </TabButton>
+            ))}
+          </TabsContainer>
         </HeaderContent>
       </Header>
-
-      <TabsContainer>
-        {['所有清單', '未完成', '已完成'].map(tab => (
-          <TabButton 
-            key={tab}
-            isActive={selectedTab === tab}
-            onClick={() => setSelectedTab(tab)}
-          >
-            {tab}
-          </TabButton>
-        ))}
-      </TabsContainer>
 
       <OrdersList>
         {filteredOrders.length === 0 ? (
@@ -91,7 +90,7 @@ const OrderHistory = () => {
           </NoOrders>
         ) : (
           filteredOrders.map(order => (
-            <OrderCard key={order.id}>
+            <OrderCard key={order.id} hover>
               <OrderInfo>
                 <OrderImage 
                   src={order.image} 

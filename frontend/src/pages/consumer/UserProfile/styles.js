@@ -1,81 +1,26 @@
 // src/pages/UserProfile/styles.js
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
+import { 
+  PageContainer, 
+  PageHeader, 
+  HeaderBackground, 
+  HeaderContent,
+  PageTitle,
+  Card,
+  Button
+} from '../components/shared/styles';
 
-const moveCircle = keyframes`
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(10px, -10px);
-  }
+// 繼承基礎組件
+export const Container = PageContainer;
+export const Header = styled(PageHeader)`
+  padding: ${props => props.theme.spacing.xs} 0; // 縮小上下間距
 `;
+export const Title = styled(PageTitle)`
+  font-size: 2rem; // 調整標題尺寸
 
-export const Container = styled.div`
-  min-height: 100vh;
-  background: #f0f7f5;
-  padding-bottom: 60px;
-`;
-
-export const Header = styled.header`
-  position: relative;
-  background: #6CB7AA;
-  padding: ${props => props.theme.spacing.lg} ${props => props.theme.spacing.md};
-  margin-bottom: ${props => props.theme.spacing.xl};
-  overflow: hidden;
-`;
-
-export const HeaderBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  pointer-events: none;
-
-  .circle {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    font-size: 1.75rem; // 手機版相應調整
   }
-
-  .circle-1 {
-    width: 100px;
-    height: 100px;
-    top: -20px;
-    right: 10%;
-    animation: ${moveCircle} 7s ease-in-out infinite;
-  }
-
-  .circle-2 {
-    width: 60px;
-    height: 60px;
-    top: 40px;
-    right: 20%;
-    animation: ${moveCircle} 5s ease-in-out infinite reverse;
-  }
-
-  .circle-3 {
-    width: 40px;
-    height: 40px;
-    top: 60px;
-    right: 25%;
-    animation: ${moveCircle} 6s ease-in-out infinite;
-  }
-`;
-
-export const HeaderContent = styled.div`
-  position: relative;
-  z-index: 1;
-  text-align: center;
-`;
-
-export const Title = styled.h1`
-  color: white;
-  font-size: ${props => props.theme.typography.h1.fontSize};
-  margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 export const ProfileContent = styled.div`
@@ -106,33 +51,8 @@ export const Avatar = styled.img`
   object-fit: cover;
 `;
 
-export const CameraButton = styled.button`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: ${props => props.theme.borderRadius.full};
-  background: #6CB7AA;
-  border: 3px solid white;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all ${props => props.theme.transition.default};
-
-  &:hover {
-    background: #5BA99C;
-    transform: scale(1.05);
-  }
-`;
-
-export const InfoContainer = styled.div`
-  background: white;
+export const InfoContainer = styled(Card)`
   padding: ${props => props.theme.spacing.xl};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  box-shadow: ${props => props.theme.shadows.sm};
 `;
 
 export const InfoGroup = styled.div`
@@ -165,23 +85,12 @@ export const Input = styled.input`
   }
 `;
 
-export const SaveButton = styled.button`
+export const SaveButton = styled(Button)`
   width: 100%;
-  padding: ${props => props.theme.spacing.md};
-  background: #6CB7AA;
-  color: white;
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.full};
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all ${props => props.theme.transition.default};
   margin-top: ${props => props.theme.spacing.xl};
-  box-shadow: ${props => props.theme.shadows.sm};
-
-  &:hover {
-    background: #5BA99C;
-    transform: translateY(-1px);
-    box-shadow: ${props => props.theme.shadows.md};
-  }
+  padding: ${props => props.theme.spacing.md};
+  font-size: 1.1rem;
 `;
+
+// 導出共享組件
+export { HeaderBackground, HeaderContent };
