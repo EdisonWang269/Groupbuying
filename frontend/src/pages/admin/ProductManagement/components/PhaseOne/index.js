@@ -44,6 +44,33 @@ const PhaseOne = () => {
       statement_date: '2024/05/20',
       current_orders: 15,
       total_amount: 2700
+    },
+    {
+      id: 3,
+      name: '特製泡芙1313',
+      price: 180,
+      launch_date: '2024/05/03',
+      statement_date: '2024/05/20',
+      current_orders: 15,
+      total_amount: 2700
+    },
+    {
+      id: 4,
+      name: '特製泡芙32',
+      price: 180,
+      launch_date: '2024/05/03',
+      statement_date: '2024/05/20',
+      current_orders: 15,
+      total_amount: 2700
+    },
+    {
+      id: 5,
+      name: '特製泡芙21',
+      price: 180,
+      launch_date: '2024/05/03',
+      statement_date: '2024/05/20',
+      current_orders: 15,
+      total_amount: 2700
     }
   ];
 
@@ -97,13 +124,13 @@ const PhaseOne = () => {
                 <OrderCount>目前訂購數：{product.current_orders}</OrderCount>
                 <OrderAmount>總金額：${product.total_amount}</OrderAmount>
               </InfoRow>
-              <InfoRow>
+              <InfoRow isDateRow>
                 <IconWrapper>
                   <Calendar size={16} />
                 </IconWrapper>
                 <span>上架日期：{product.launch_date}</span>
               </InfoRow>
-              <InfoRow>
+              <InfoRow isDateRow>
                 <IconWrapper>
                   <Calendar size={16} />
                 </IconWrapper>

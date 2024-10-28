@@ -1,4 +1,3 @@
-// src/pages/admin/PhaseTwo/index.js
 import React, { useState, useEffect } from 'react';
 import { Calendar, Truck, Package } from 'lucide-react';
 import {
@@ -45,6 +44,30 @@ const PhaseTwo = () => {
       statement_date: '2024/05/20',
       total_orders: 30,
       total_amount: 5400
+    },
+    {
+      id: 1,
+      name: '香酥芋泥蛋糕',
+      price: 240,
+      statement_date: '2024/05/15',
+      total_orders: 50,
+      total_amount: 12000
+    },
+    {
+      id: 1,
+      name: '香酥芋泥蛋糕',
+      price: 240,
+      statement_date: '2024/05/15',
+      total_orders: 50,
+      total_amount: 12000
+    },
+    {
+      id: 1,
+      name: '香酥芋泥蛋糕',
+      price: 240,
+      statement_date: '2024/05/15',
+      total_orders: 50,
+      total_amount: 12000
     }
   ];
 
@@ -113,9 +136,7 @@ const PhaseTwo = () => {
         {products.map(product => (
           <ProductCard key={product.id}>
             <ProductInfo>
-              <div className="header">
-                <ProductTitle>{product.name}</ProductTitle>
-              </div>
+              <ProductTitle>{product.name}</ProductTitle>
               
               <InfoRow>
                 <span>單價：${product.price}</span>
@@ -123,7 +144,7 @@ const PhaseTwo = () => {
                 <OrderAmount>總金額：${product.total_amount}</OrderAmount>
               </InfoRow>
               
-              <InfoRow>
+              <InfoRow isDateRow>
                 <IconWrapper>
                   <Calendar size={16} />
                 </IconWrapper>

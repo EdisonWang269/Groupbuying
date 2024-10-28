@@ -62,6 +62,132 @@ const PhaseThree = () => {
           quantity: 1,
           total_price: 240,
           status: 'received'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        }
+      ]
+    },
+    {
+      id: 1,
+      name: '香酥芋泥蛋糕',
+      price: 240,
+      arrival_date: '2024/05/20',
+      due_date: '2024/05/27',
+      total_orders: 30,
+      received_orders: 15,
+      orders: [
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 2,
+          customer_name: '李小華',
+          phone: '0923456789',
+          quantity: 1,
+          total_price: 240,
+          status: 'received'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        }
+      ]
+    },
+    {
+      id: 1,
+      name: '香酥芋泥蛋糕',
+      price: 240,
+      arrival_date: '2024/05/20',
+      due_date: '2024/05/27',
+      total_orders: 30,
+      received_orders: 15,
+      orders: [
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 2,
+          customer_name: '李小華',
+          phone: '0923456789',
+          quantity: 1,
+          total_price: 240,
+          status: 'received'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
+        },
+        {
+          id: 1,
+          customer_name: '王小明',
+          phone: '0912345678',
+          quantity: 2,
+          total_price: 480,
+          status: 'pending'
         }
       ]
     }
