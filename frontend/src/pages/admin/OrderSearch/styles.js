@@ -21,10 +21,11 @@ export const SearchButton = styled(AdminButton)`
   align-items: center;
   justify-content: center;
   gap: ${props => props.theme.spacing.sm};
-  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
   background-color: #6CB7AA;
   color: white;
   min-width: 120px;
+  height: 50px;
 
   &:hover:not(:disabled) {
     background-color: #5ea99c;

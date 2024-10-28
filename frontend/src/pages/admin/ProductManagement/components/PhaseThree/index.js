@@ -126,7 +126,7 @@ const PhaseThree = () => {
           <div className="circle circle-3" />
         </AdminHeaderBackground>
         <AdminHeaderContent>
-          <AdminTitle>第三階段商品</AdminTitle>
+          <AdminTitle>取貨中商品</AdminTitle>
         </AdminHeaderContent>
       </AdminHeader>
 
@@ -190,7 +190,7 @@ const PhaseThree = () => {
                         <td>{order.quantity}</td>
                         <td>${order.total_price}</td>
                         <td>
-                          <StatusTag status={order.status === 'received' ? 'success' : 'warning'}>
+                          <StatusTag status={order.status === 'received' ? 'success' : 'error'}>
                             {order.status === 'received' ? '已領取' : '未領取'}
                           </StatusTag>
                         </td>

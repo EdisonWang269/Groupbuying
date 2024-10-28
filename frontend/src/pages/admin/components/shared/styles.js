@@ -72,7 +72,7 @@ export const AdminTitle = styled.h1`
 `;
 
 export const AdminContentContainer = styled.div`
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 ${props => props.theme.spacing.lg};
 
@@ -95,11 +95,12 @@ export const AdminCard = styled.div`
 
 export const AdminInput = styled.input`
   width: 100%;
-  padding: ${props => props.theme.spacing.md};
+  padding: 0 ${props => props.theme.spacing.md};
   border: 2px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
   font-size: ${props => props.theme.typography.body.fontSize};
   transition: all ${props => props.theme.transition.default};
+  height: 50px;
 
   &:focus {
     outline: none;
@@ -211,12 +212,12 @@ export const StatusTag = styled.span`
   font-size: ${props => props.theme.typography.small.fontSize};
   font-weight: 500;
   
-  ${props => props.status ? `
+  ${props => props.status === 'success' ? `
     background-color: ${props.theme.colors.success}15;
     color: ${props.theme.colors.success};
   ` : `
-    background-color: ${props.theme.colors.warning}15;
-    color: ${props.theme.colors.warning};
+    background-color: rgba(239, 68, 68, 0.15);
+    color: rgb(239, 68, 68);
   `}
 `;
 

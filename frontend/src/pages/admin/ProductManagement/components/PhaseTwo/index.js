@@ -8,7 +8,6 @@ import {
   AdminHeaderContent,
   AdminTitle,
   AdminContentContainer,
-  StatusTag,
   IconWrapper
 } from '../../../components/shared/styles';
 import {
@@ -106,7 +105,7 @@ const PhaseTwo = () => {
           <div className="circle circle-3" />
         </AdminHeaderBackground>
         <AdminHeaderContent>
-          <AdminTitle>第二階段商品</AdminTitle>
+          <AdminTitle>等待到貨商品</AdminTitle>
         </AdminHeaderContent>
       </AdminHeader>
 
@@ -116,7 +115,6 @@ const PhaseTwo = () => {
             <ProductInfo>
               <div className="header">
                 <ProductTitle>{product.name}</ProductTitle>
-                <StatusTag status="warning">等待到貨</StatusTag>
               </div>
               
               <InfoRow>

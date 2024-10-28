@@ -48,7 +48,7 @@ export const InfoRow = styled.div`
 `;
 
 export const OrderAmount = styled.span`
-  color: #6CB7AA;
+  // color: ${props => props.theme.colors.primary};
   font-weight: 500;
 `;
 

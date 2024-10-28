@@ -41,24 +41,35 @@ export const InfoRow = styled.div`
   &:last-child {
     margin-bottom: 0;
   }
+
+  button {
+    margin-left: -20px;  // 向左移動以靠近日期文字
+  }
 `;
 
 export const EditButton = styled.button`
-  padding: ${props => props.theme.spacing.xs};
+  padding: ${props => props.theme.spacing.sm};
   border-radius: ${props => props.theme.borderRadius.sm};
   color: #6CB7AA;
   transition: all ${props => props.theme.transition.default};
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
 
   &:hover {
     background-color: rgba(108, 183, 170, 0.1);
   }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const OrderAmount = styled.span`
-  color: #6CB7AA;
+  // color: ${props => props.theme.colors.primary};
   font-weight: 500;
 `;
 

@@ -25,7 +25,10 @@ import {
   ImagePreview,
   PriceGroup,
   DateGroup,
-  FormActions
+  FormActions,
+  FormContainer,
+  RequiredField,
+  CustomInputGroup
 } from './styles';
 
 const CreateProduct = () => {
@@ -79,7 +82,6 @@ const CreateProduct = () => {
     setError('');
 
     try {
-      // 表單驗證
       if (!formData.product_name.trim()) {
         throw new Error('請輸入商品名稱');
       }
@@ -147,13 +149,16 @@ const CreateProduct = () => {
         <AdminCard>
           {error && <AdminErrorMessage>{error}</AdminErrorMessage>}
           
-          <form onSubmit={handleSubmit}>
+          <FormContainer onSubmit={handleSubmit}>
             <FormSection>
-              <InputGroup>
-                <AdminLabel>商品名稱</AdminLabel>
+              <CustomInputGroup>
+                <AdminLabel>
+                  商品名稱
+                  <RequiredField>*</RequiredField>
+                </AdminLabel>
                 <InputWrapper>
                   <IconWrapper>
-                    <Package size={20} />
+                    <Package size={15} />
                   </IconWrapper>
                   <AdminInput
                     type="text"
@@ -164,10 +169,13 @@ const CreateProduct = () => {
                     required
                   />
                 </InputWrapper>
-              </InputGroup>
+              </CustomInputGroup>
 
               <ImageUpload>
-                <AdminLabel>商品圖片</AdminLabel>
+                <AdminLabel>
+                  商品圖片
+                  <RequiredField>*</RequiredField>
+                </AdminLabel>
                 <div className="upload-area">
                   <input
                     type="file"
@@ -196,8 +204,11 @@ const CreateProduct = () => {
                 </div>
               </ImageUpload>
 
-              <InputGroup>
-                <AdminLabel>供應商名稱</AdminLabel>
+              <CustomInputGroup>
+                <AdminLabel>
+                  供應商名稱
+                  <RequiredField>*</RequiredField>
+                </AdminLabel>
                 <AdminInput
                   type="text"
                   name="supplier_name"
@@ -206,12 +217,15 @@ const CreateProduct = () => {
                   placeholder="請輸入供應商名稱"
                   required
                 />
-              </InputGroup>
+              </CustomInputGroup>
 
               <PriceGroup>
-                <InputGroup>
-                  <AdminLabel>售價</AdminLabel>
-                  <InputWrapper>
+                <CustomInputGroup>
+                  <AdminLabel>
+                    售價
+                    <RequiredField>*</RequiredField>
+                  </AdminLabel>
+                  <InputWrapper className="price-input">
                     <span className="currency">$</span>
                     <AdminInput
                       type="number"
@@ -223,10 +237,13 @@ const CreateProduct = () => {
                       required
                     />
                   </InputWrapper>
-                </InputGroup>
+                </CustomInputGroup>
 
-                <InputGroup>
-                  <AdminLabel>單位</AdminLabel>
+                <CustomInputGroup>
+                  <AdminLabel>
+                    單位
+                    <RequiredField>*</RequiredField>
+                  </AdminLabel>
                   <AdminInput
                     type="text"
                     name="unit"
@@ -235,11 +252,14 @@ const CreateProduct = () => {
                     placeholder="例：個/盒/組"
                     required
                   />
-                </InputGroup>
+                </CustomInputGroup>
 
-                <InputGroup>
-                  <AdminLabel>成本</AdminLabel>
-                  <InputWrapper>
+                <CustomInputGroup>
+                  <AdminLabel>
+                    成本
+                    <RequiredField>*</RequiredField>
+                  </AdminLabel>
+                  <InputWrapper className="price-input">
                     <span className="currency">$</span>
                     <AdminInput
                       type="number"
@@ -251,12 +271,15 @@ const CreateProduct = () => {
                       required
                     />
                   </InputWrapper>
-                </InputGroup>
+                </CustomInputGroup>
               </PriceGroup>
 
               <DateGroup>
-                <InputGroup>
-                  <AdminLabel>結單日期</AdminLabel>
+                <CustomInputGroup>
+                  <AdminLabel>
+                    結單日期
+                    <RequiredField>*</RequiredField>
+                  </AdminLabel>
                   <InputWrapper>
                     <IconWrapper>
                       <Calendar size={20} />
@@ -270,11 +293,14 @@ const CreateProduct = () => {
                       required
                     />
                   </InputWrapper>
-                </InputGroup>
+                </CustomInputGroup>
               </DateGroup>
 
-              <InputGroup>
-                <AdminLabel>商品說明</AdminLabel>
+              <CustomInputGroup>
+                <AdminLabel>
+                  商品說明
+                  <RequiredField>*</RequiredField>
+                </AdminLabel>
                 <AdminTextArea
                   name="product_describe"
                   value={formData.product_describe}
@@ -283,7 +309,7 @@ const CreateProduct = () => {
                   rows="4"
                   required
                 />
-              </InputGroup>
+              </CustomInputGroup>
             </FormSection>
 
             <FormActions>
@@ -297,7 +323,7 @@ const CreateProduct = () => {
                 {isSubmitting ? '處理中...' : '確認上架'}
               </AdminPrimaryButton>
             </FormActions>
-          </form>
+          </FormContainer>
         </AdminCard>
       </AdminContentContainer>
     </AdminContainer>

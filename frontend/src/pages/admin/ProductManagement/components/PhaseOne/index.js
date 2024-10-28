@@ -8,7 +8,6 @@ import {
   AdminHeaderContent,
   AdminTitle,
   AdminContentContainer,
-  StatusTag,
   IconWrapper
 } from '../../../components/shared/styles';
 import {
@@ -84,7 +83,7 @@ const PhaseOne = () => {
           <div className="circle circle-3" />
         </AdminHeaderBackground>
         <AdminHeaderContent>
-          <AdminTitle>第一階段商品</AdminTitle>
+          <AdminTitle>團購中商品</AdminTitle>
         </AdminHeaderContent>
       </AdminHeader>
 
@@ -113,11 +112,10 @@ const PhaseOne = () => {
                   onClick={() => handleEditDate(product)}
                   title="修改結單日期"
                 >
-                  <Edit size={16} />
+                  <Edit size={20} />
                 </EditButton>
               </InfoRow>
             </ProductInfo>
-            <StatusTag status="active">團購中</StatusTag>
           </ProductCard>
         ))}
 

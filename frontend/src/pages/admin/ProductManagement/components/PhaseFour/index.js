@@ -98,7 +98,7 @@ const PhaseFour = () => {
           <div className="circle circle-3" />
         </AdminHeaderBackground>
         <AdminHeaderContent>
-          <AdminTitle>第四階段商品</AdminTitle>
+          <AdminTitle>已完成商品</AdminTitle>
         </AdminHeaderContent>
       </AdminHeader>
 

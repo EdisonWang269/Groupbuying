@@ -158,11 +158,12 @@ export const NotifyButton = styled.button`
   justify-content: center;
   padding: ${props => props.theme.spacing.sm};
   border-radius: ${props => props.theme.borderRadius.full};
-  color: #6CB7AA;
-  background-color: rgba(108, 183, 170, 0.1);
+  color: #FFA000; // 改成金黃色
+  background-color: rgba(255, 160, 0, 0.1); // 使用相同色系的淺色背景
   transition: all ${props => props.theme.transition.default};
+  border: 1px solid #E0E0E0;
 
   &:hover {
-    background-color: rgba(108, 183, 170, 0.2);
+    background-color: rgba(255, 160, 0, 0.2); // hover 時背景顏色加深
   }
 `;
