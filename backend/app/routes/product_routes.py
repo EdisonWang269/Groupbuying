@@ -11,7 +11,8 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-config_path = 'backend/config.ini'
+# config_path = 'backend/config.ini'
+config_path = '/home/groupbuying/Groupbuying/backend/config.ini'
 config = configparser.ConfigParser()
 config.read(config_path)
 
