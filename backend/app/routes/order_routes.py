@@ -108,6 +108,7 @@ def get_all_orders_by_userid(userid):
                         p.due_days, 
                         o.receive_status,
                         o.order_id,
+                        o.quantity,
                         p.product_picture
                     FROM 
                         `Order` o
@@ -133,7 +134,8 @@ def get_all_orders_by_userid(userid):
                 "due_date": due_date.strftime("%Y-%m-%d") if due_date else None,
                 "receive_status": order[3],
                 "order_id": order[4],
-                "product_picture": order[5],
+                "quantity": order[5],
+                "product_picture": order[6],
             })
             count += 1
 
