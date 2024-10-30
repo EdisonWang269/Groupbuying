@@ -5,24 +5,23 @@ from ..database import execute_query
 
 from datetime import datetime
 
-import configparser
+# import configparser
 
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
 
-# config_path = 'backend/config.ini'
-config_path = '/home/groupbuying/Groupbuying/backend/config.ini'
-config = configparser.ConfigParser()
-config.read(config_path)
+# # config_path = 'backend/config.ini'
+# config_path = '/home/groupbuying/Groupbuying/backend/config.ini'
+# config = configparser.ConfigParser()
+# config.read(config_path)
 
-cloudinary.config(
-    cloud_name = config['cloudinary']['cloud_name'], 
-    api_key = config['cloudinary']['api_key'], 
-    api_secret = config['cloudinary']['api_secret'],
-    api_proxy= 'https://193.227.129.212:54759',
-    secure = True
-)
+# cloudinary.config(
+#     cloud_name = config['cloudinary']['cloud_name'], 
+#     api_key = config['cloudinary']['api_key'], 
+#     api_secret = config['cloudinary']['api_secret'],
+#     secure = True
+# )
 
 product_bp = Blueprint("product", __name__)
 
@@ -64,7 +63,8 @@ def get_all_products_by_storeid():
                 "price": float(product[2]),
                 "unit": product[3],
                 "product_name": product[4],
-                "product_picture": product[5]
+                "product_picture": product[5],
+                "product_describe": product[6]
             })
 
         response = {
@@ -92,21 +92,28 @@ def create_product():
         if role != "merchant":
             return jsonify({"message": "Only merchant can create product"}), 403
 
+        # 檢查是否為 JSON 請求
+        if not request.is_json:
+            return jsonify({"error": "Request must be JSON"}), 400
+
+        data = request.json
+        
         # 檢查所有必要欄位是否存在
-        required_fields = ["price", "unit", "product_name", "product_describe", "supplier_name", "launch_date", "statement_date", "cost"]
+        required_fields = ["price", "unit", "product_name", "product_describe", 
+                         "supplier_name", "statement_date", "cost", "product_picture"]
         for field in required_fields:
-            if field not in request.form:
+            if field not in data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400
 
         # 獲取並驗證所有欄位
-        price = request.form.get("price")
-        unit = request.form.get("unit")
-        product_name = request.form.get("product_name")
-        product_describe = request.form.get("product_describe")
-        supplier_name = request.form.get("supplier_name")
-        launch_date = request.form.get("launch_date")
-        statement_date = request.form.get("statement_date")
-        cost = request.form.get("cost")
+        price = data.get("price")
+        unit = data.get("unit")
+        product_name = data.get("product_name")
+        product_describe = data.get("product_describe")
+        supplier_name = data.get("supplier_name")
+        statement_date = data.get("statement_date")
+        cost = data.get("cost")
+        product_picture = data.get("product_picture")  # Now this is the Cloudinary URL
 
         # 驗證數值欄位
         try:
@@ -119,9 +126,9 @@ def create_product():
 
         # 驗證日期欄位
         try:
-            launch_date = datetime.strptime(launch_date, "%Y-%m-%d")
             statement_date = datetime.strptime(statement_date, "%Y-%m-%d")
-            if launch_date > statement_date:
+            launch_date = datetime.now()  # Use current date as launch date
+            if launch_date.date() > statement_date.date():
                 return jsonify({"error": "Launch date cannot be later than statement date"}), 400
         except ValueError:
             return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
@@ -132,38 +139,20 @@ def create_product():
         if existing_product:
             return jsonify({"error": "Product with this name already exists"}), 400
 
-        # 檢查並處理圖片上傳
-        if 'product_picture' not in request.files:
-            return jsonify({"error": "No file part"}), 400
-
-        file = request.files['product_picture']
-        if file.filename == '':
-            return jsonify({"error": "No selected file"}), 400
-
-        # 檢查文件類型
-        allowed_extensions = {'png', 'jpg', 'jpeg'}
-        if not file.filename.lower().split('.')[-1] in allowed_extensions:
-            return jsonify({"error": "Invalid file type"}), 400
-
-        # 上傳圖片到 Cloudinary
-        try:
-            upload_result = cloudinary.uploader.upload(file)
-            image_url = upload_result.get('url')
-        except Exception as e:
-            return jsonify({"error": f"Failed to upload image: {str(e)}"}), 500
-
         # 插入數據庫
         query = """
-        INSERT INTO Product (store_id, price, unit, product_describe, supplier_name, product_name, product_picture, launch_date, statement_date, cost)
+        INSERT INTO Product (store_id, price, unit, product_describe, supplier_name, 
+                           product_name, product_picture, launch_date, statement_date, cost)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
         result = execute_query(
             query,
-            (store_id, price, unit, product_describe, supplier_name, product_name, image_url, launch_date, statement_date, cost),
+            (store_id, price, unit, product_describe, supplier_name, product_name, 
+             product_picture, launch_date, statement_date, cost),
         )
 
         if result:
-            return jsonify({"message": "Product created successfully", "image_url": image_url}), 201
+            return jsonify({"message": "Product created successfully"}), 201
         else:
             return jsonify({"error": "Failed to create product"}), 500
 
