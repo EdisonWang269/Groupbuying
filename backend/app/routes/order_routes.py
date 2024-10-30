@@ -41,7 +41,7 @@ def create_order():
         print(type(customer_result))
         phone = customer_result
 
-        if phone:
+        if not phone:
             return jsonify({"error": "User phone number is not set. Please update your profile."}), 400
 
         check_product_query =   """
