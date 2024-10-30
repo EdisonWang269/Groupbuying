@@ -135,9 +135,6 @@ def get_all_orders_by_userid(userid):
             })
             count += 1
 
-        if not data:
-            return jsonify({"message": "No orders found"}), 404
-
         return jsonify({"order":data, "order_count":count}), 200
     except Exception as e:
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
