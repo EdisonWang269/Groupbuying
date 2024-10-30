@@ -8,8 +8,6 @@ import datetime
 
 order_bp = Blueprint("order", __name__)
 
-# 提交一筆訂單 (POST)
-# 輸入 product_id 和 quantity，創建一筆新訂單
 @order_bp.route("/api/orders", methods=["POST"])
 @jwt_required()
 def create_order():
@@ -33,33 +31,57 @@ def create_order():
         store_id = identity.get("store_id")
 
         # 檢查該用戶的 phone 欄位是否為 null
-        check_customer_query =  """
-                                    SELECT phone FROM Customer 
-                                    WHERE userid = %s AND store_id = %s
-                                """
+        check_customer_query = """
+                                SELECT phone FROM Customer 
+                                WHERE userid = %s AND store_id = %s
+                             """
         customer_result = execute_query(check_customer_query, (userid, store_id))
-        print(type(customer_result))
         phone = customer_result
 
         if not phone:
             return jsonify({"error": "User phone number is not set. Please update your profile."}), 400
 
-        check_product_query =   """
-                                    SELECT product_id FROM Product 
-                                    WHERE product_id = %s AND store_id = %s
-                                """
+        check_product_query = """
+                                SELECT product_id FROM Product 
+                                WHERE product_id = %s AND store_id = %s
+                             """
         product_result = execute_query(check_product_query, (product_id, store_id))
 
         if not product_result:
             return jsonify({"error": "Product not found or does not belong to your store"}), 404
 
-        query = "INSERT INTO `Order` (userid, product_id, quantity) VALUES (%s, %s, %s)"
-        result = execute_query(query, (userid, product_id, quantity))
+        # 檢查是否已存在相同 userid 和 product_id 的訂單
+        check_existing_order_query = """
+                                     SELECT order_id, quantity 
+                                     FROM `Order` 
+                                     WHERE userid = %s AND product_id = %s
+                                     AND receive_status = FALSE
+                                   """
+        existing_order = execute_query(check_existing_order_query, (userid, product_id))
+
+        if existing_order:
+            # 如果訂單存在，更新數量
+            update_query = """
+                          UPDATE `Order` 
+                          SET quantity = quantity + %s 
+                          WHERE userid = %s AND product_id = %s
+                          AND receive_status = FALSE
+                          """
+            result = execute_query(update_query, (quantity, userid, product_id))
+            message = "Order quantity updated successfully"
+        else:
+            # 如果訂單不存在，創建新訂單
+            insert_query = """
+                          INSERT INTO `Order` (userid, product_id, quantity) 
+                          VALUES (%s, %s, %s)
+                          """
+            result = execute_query(insert_query, (userid, product_id, quantity))
+            message = "Order created successfully"
 
         if result:
-            return jsonify({"message": "Order created successfully"}), 201
+            return jsonify({"message": message}), 201
         else:
-            return jsonify({"error": "Failed to create order"}), 500
+            return jsonify({"error": "Failed to process order"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
