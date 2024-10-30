@@ -1,4 +1,3 @@
-// src/pages/admin/CreateProduct/index.js
 import React, { useState } from 'react';
 import { Upload, Calendar, Package } from 'lucide-react';
 import {
@@ -31,10 +30,14 @@ import {
   CustomInputGroup
 } from './styles';
 
+// Cloudinary configuration
+const CLOUDINARY_UPLOAD_PRESET = 'ml_default';
+const CLOUDINARY_CLOUD_NAME = 'dfowxcfef';
+
 const CreateProduct = () => {
   const [formData, setFormData] = useState({
     product_name: '',
-    product_picture: null,
+    product_picture: '',
     supplier_name: '',
     price: '',
     unit: '',
@@ -45,6 +48,7 @@ const CreateProduct = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,25 +58,53 @@ const CreateProduct = () => {
     }));
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         setError('圖片大小不能超過 5MB');
         return;
       }
-      
-      setFormData(prev => ({
-        ...prev,
-        product_picture: file
-      }));
+
+      setIsUploading(true);
       setError('');
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload to Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('圖片上傳失敗');
+        }
+
+        const data = await response.json();
+        setFormData(prev => ({
+          ...prev,
+          product_picture: data.secure_url
+        }));
+      } catch (error) {
+        setError('圖片上傳失敗: ' + error.message);
+        setImagePreview(null);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -91,15 +123,13 @@ const CreateProduct = () => {
       if (parseFloat(formData.price) <= 0) {
         throw new Error('請輸入有效的售價');
       }
-      
-      const formDataToSend = new FormData();
-      for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
-      }
 
       const response = await fetch('/api/products', {
         method: 'POST',
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
@@ -118,7 +148,7 @@ const CreateProduct = () => {
   const handleReset = () => {
     setFormData({
       product_name: '',
-      product_picture: null,
+      product_picture: '',
       supplier_name: '',
       price: '',
       unit: '',
@@ -190,13 +220,13 @@ const CreateProduct = () => {
                         <img src={imagePreview} alt="預覽圖片" />
                         <div className="overlay">
                           <Upload size={24} />
-                          <span>更換圖片</span>
+                          <span>{isUploading ? '上傳中...' : '更換圖片'}</span>
                         </div>
                       </ImagePreview>
                     ) : (
                       <div className="upload-placeholder">
                         <Upload size={24} />
-                        <span>點擊上傳圖片</span>
+                        <span>{isUploading ? '上傳中...' : '點擊上傳圖片'}</span>
                         <span className="upload-hint">建議尺寸 800x800 像素，檔案大小不超過 5MB</span>
                       </div>
                     )}
@@ -318,7 +348,7 @@ const CreateProduct = () => {
               </AdminSecondaryButton>
               <AdminPrimaryButton 
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isUploading}
               >
                 {isSubmitting ? '處理中...' : '確認上架'}
               </AdminPrimaryButton>
