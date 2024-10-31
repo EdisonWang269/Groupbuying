@@ -118,3 +118,29 @@ def update_user_blacklist(userid):
         return jsonify({"message": "User blacklist status updated successfully", "new_blacklist": new_blacklist}), 200
     
     return jsonify({"error": "Failed to update user blacklist status"}), 500
+
+# 獲取用戶資訊 (GET)
+# 回傳特定用戶的名字和電話
+@user_bp.route("/api/users/<string:userid>", methods=["GET"])
+@jwt_required()
+def get_user_info(userid):
+    identity = get_jwt_identity()
+    store_id = identity.get('store_id')
+    current_userid = identity.get('userid')
+    claims = get_jwt()
+    role = claims['role']
+
+    # 檢查權限：只有商家或本人可以查看資料
+    if role != 'merchant' and userid != current_userid:
+        return jsonify({"error": "You can only view your own information"}), 403
+
+    query = "SELECT user_name, phone FROM Customer WHERE userid = %s AND store_id = %s"
+    result = execute_query(query, (userid, store_id))
+    
+    if not result:
+        return jsonify({"error": "User not found"}), 404
+    
+    return jsonify({
+        "user_name": result[0],
+        "phone": result[1]
+    }), 200
