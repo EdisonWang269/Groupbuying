@@ -110,7 +110,8 @@ def get_all_orders_by_userid(userid):
                         o.order_id,
                         o.quantity,
                         p.product_picture,
-                        p.unit
+                        p.unit,
+                        p.price
                     FROM 
                         `Order` o
                     JOIN 
@@ -138,7 +139,8 @@ def get_all_orders_by_userid(userid):
                 "order_id": order[4],
                 "quantity": order[5],
                 "product_picture": order[6],
-                "unit": order[7]
+                "unit": order[7],
+                "price": order[8]*order[5]
             })
             count += 1
 
