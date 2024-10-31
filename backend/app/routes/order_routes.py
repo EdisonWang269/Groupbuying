@@ -109,7 +109,8 @@ def get_all_orders_by_userid(userid):
                         o.receive_status,
                         o.order_id,
                         o.quantity,
-                        p.product_picture
+                        p.product_picture,
+                        p.unit
                     FROM 
                         `Order` o
                     JOIN 
@@ -132,10 +133,12 @@ def get_all_orders_by_userid(userid):
             data.append({
                 "product_name": order[0],
                 "due_date": due_date.strftime("%Y-%m-%d") if due_date else None,
+                "arrival_date": arrival_date.strftime("%Y-%m-%d") if arrival_date else None,
                 "receive_status": order[3],
                 "order_id": order[4],
                 "quantity": order[5],
                 "product_picture": order[6],
+                "unit": order[7]
             })
             count += 1
 
