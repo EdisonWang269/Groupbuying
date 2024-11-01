@@ -3,15 +3,18 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from './styles/theme';
 import { GlobalStyles } from './styles/GlobalStyles';
-import AppRoutes from './routes';  // 引入總路由配置
+import AppRoutes from './routes';
+import { AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 };

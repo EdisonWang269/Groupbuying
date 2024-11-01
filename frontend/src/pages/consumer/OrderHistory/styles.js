@@ -1,4 +1,3 @@
-// src/pages/OrderHistory/styles.js
 import styled from '@emotion/styled';
 import { 
   PageContainer, 
@@ -13,24 +12,22 @@ import {
 // 基礎容器
 export const Container = styled(PageContainer)``;
 
-// 頭部區域 - 縮小整體大小
 export const Header = styled(PageHeader)`
   position: relative;
-  margin-bottom: ${props => props.theme.spacing.md}; // 從 xl 改為 md
-  padding: ${props => props.theme.spacing.sm} 0; // 添加較小的上下內邊距
+  margin-bottom: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} 0;
 `;
 
 export const Title = styled(PageTitle)`
   text-align: center;
-  margin-bottom: ${props => props.theme.spacing.sm}; // 從 lg 改為 sm，縮小與tabs的距離
-  font-size: 2.5rem; // 從 2.5rem 改小
+  margin-bottom: ${props => props.theme.spacing.sm};
+  font-size: 2.5rem;
 
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
-    font-size: 2rem; // 從 2rem 改小
+    font-size: 2rem;
   }
 `;
 
-// 標籤欄
 export const TabsContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -63,12 +60,11 @@ export const TabButton = styled(Button)`
 
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
     min-width: 80px;
-    padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md}; // 縮小按鈕padding
+    padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
     font-size: ${props => props.theme.typography.small.fontSize};
   }
 `;
 
-// 訂單列表
 export const OrdersList = styled.div`
   max-width: 800px;
   margin: ${props => props.theme.spacing.md} auto;
@@ -85,7 +81,6 @@ export const OrdersList = styled.div`
   }
 `;
 
-// 訂單卡片
 export const OrderCard = styled(Card)`
   padding: 0;
   background: white;
@@ -100,8 +95,8 @@ export const OrderCard = styled(Card)`
 
 export const OrderInfo = styled.div`
   display: flex;
-  padding: ${props => props.theme.spacing.md};
-  gap: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.lg};
+  gap: ${props => props.theme.spacing.lg};
   position: relative;
 
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
@@ -111,8 +106,8 @@ export const OrderInfo = styled.div`
 `;
 
 export const OrderImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: ${props => props.theme.borderRadius.md};
   background-color: ${props => props.theme.colors.backgroundLight};
@@ -128,15 +123,16 @@ export const OrderDetails = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme.spacing.xs};
-  padding-right: 100px;
+  gap: ${props => props.theme.spacing.sm};
+  padding-right: 110px;
+  min-width: 0; // 防止 flex item 溢出
 
   h3 {
     margin: 0;
-    font-size: ${props => props.theme.typography.body.fontSize};
+    font-size: 1.1rem;
     color: ${props => props.theme.colors.text};
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -144,50 +140,96 @@ export const OrderDetails = styled.div`
     user-select: none;
   }
 
-  p {
-    margin: 0;
-    color: ${props => props.theme.colors.textLight};
-    font-size: ${props => props.theme.typography.small.fontSize};
-    user-select: none;
-  }
-
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    padding-right: 0;
+    gap: ${props => props.theme.spacing.xs};
+    
     h3 {
-      font-size: ${props => props.theme.typography.small.fontSize};
+      font-size: 0.95rem;
+      -webkit-line-clamp: 1;
+      margin-bottom: 0;
+      padding-right: 75px;
     }
   }
 `;
 
-// 狀態標籤
+export const OrderInfoGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.lg};
+  margin-top: ${props => props.theme.spacing.xs};
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    gap: ${props => props.theme.spacing.xs};
+    margin-top: 0;
+  }
+`;
+
+export const InfoItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.xs};
+  min-width: ${props => props.fullWidth ? '100%' : '45%'};
+  
+  span:first-of-type {
+    color: ${props => props.theme.colors.textLight};
+    font-size: 0.9rem;
+  }
+  
+  span:last-child {
+    color: ${props => props.theme.colors.text};
+    font-size: 0.9rem;
+    font-weight: ${props => props.highlight ? '600' : '400'};
+  }
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    min-width: ${props => props.fullWidth ? '100%' : '100%'};
+    font-size: 0.8125rem;
+    
+    span:first-of-type,
+    span:last-child {
+      font-size: 0.8125rem;
+    }
+
+    // ${props => !props.fullWidth && !props.highlight && `
+    //   display: none;
+    // `}
+  }
+`;
+
 export const StatusTag = styled.span`
   display: inline-flex;
   align-items: center;
   padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
   border-radius: ${props => props.theme.borderRadius.full};
-  font-size: ${props => props.theme.typography.small.fontSize};
+  font-size: 0.875rem;
   font-weight: 500;
   user-select: none;
   position: absolute;
-  right: ${props => props.theme.spacing.md};
-  top: ${props => props.theme.spacing.md};
+  right: ${props => props.theme.spacing.lg};
+  top: ${props => props.theme.spacing.lg};
   
   ${props => {
     const statusStyles = {
-      '待領取': {
-        bg: '#FFF3E0',
-        color: '#FB8C00'
-      },
-      '已領取': {
+      completed: {
         bg: '#E8F5E9',
         color: '#43A047'
       },
-      '已結單': {
-        bg: '#ECEFF1',
-        color: '#607D8B'
+      processing: {
+        bg: '#E3F2FD',
+        color: '#1976D2'
+      },
+      pending: {
+        bg: '#FFF3E0',
+        color: '#FB8C00'
+      },
+      expired: {
+        bg: '#FFEBEE',
+        color: '#E53935'
       }
     };
 
-    const style = statusStyles[props.status] || statusStyles['已結單'];
+    const style = statusStyles[props.status] || statusStyles.pending;
     
     return `
       background-color: ${style.bg};
@@ -198,10 +240,11 @@ export const StatusTag = styled.span`
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
     right: ${props => props.theme.spacing.sm};
     top: ${props => props.theme.spacing.sm};
+    padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.xs};
+    font-size: 0.75rem;
   }
 `;
 
-// 無訂單狀態
 export const NoOrders = styled(Card)`
   text-align: center;
   padding: ${props => props.theme.spacing.xl};
@@ -216,5 +259,29 @@ export const NoOrders = styled(Card)`
   }
 `;
 
-// 導出共享組件
+export const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 50vh;
+  text-align: center;
+  gap: 1rem;
+`;
+
+export const RetryButton = styled.button`
+  padding: 0.5rem 1rem;
+  background-color: #6CB7AA;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #5a9e93;
+  }
+`;
+
 export { HeaderBackground, HeaderContent };

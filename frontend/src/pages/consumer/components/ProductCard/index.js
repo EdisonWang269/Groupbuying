@@ -1,3 +1,4 @@
+// src/pages/consumer/components/ProductCard/index.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -18,7 +19,7 @@ const ProductCard = ({ product }) => {
   };
 
   const handleClick = () => {
-    navigate(`/product/${product.id}`);
+    navigate(`/product/${product.product_id}`);
   };
 
   return (
@@ -30,7 +31,7 @@ const ProductCard = ({ product }) => {
       />
       <ProductInfo>
         <ProductTitle>{product.product_name}</ProductTitle>
-        <Price>$ {product.price}</Price>
+        <Price>NT$ {product.price}</Price>
         <Date>結單日期：{product.statement_date}</Date>
       </ProductInfo>
     </ProductCardWrapper>

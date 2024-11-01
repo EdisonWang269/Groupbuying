@@ -1,7 +1,9 @@
-// src/pages/HomePage/index.js
+// src/pages/consumer/HomePage/index.js
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { productAPI } from '../../../api';
 import ProductCard from '../components/ProductCard';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 import {
   Container,
   Header,
@@ -13,44 +15,54 @@ import {
   SearchBar,
   SearchIcon,
   ProductsGrid,
-  NoResultsMessage
+  NoResultsMessage,
+  ErrorMessage
 } from './styles';
 
 const HomePage = () => {
-  // 商品資料
-  const [products] = useState([
-    {
-      id: 1,
-      product_name: '香酥芋泥蛋糕',
-      price: 240,
-      statement_date: '2024/5/10',
-      product_picture: '/images/cake1.jpg'
-    },
-    {
-      id: 2, 
-      product_name: '奶酥蜂蜜蛋糕',
-      price: 220,
-      statement_date: '2024/5/12',
-      product_picture: '/images/cake2.jpg'
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await productAPI.getAllProducts();
+      
+      if (response && response.data) {
+        // 更新本地狀態
+        setProducts(response.data);
+        // 存儲到 localStorage
+        localStorage.setItem('products', JSON.stringify(response.data));
+      } else {
+        throw new Error('無效的數據格式');
+      }
+    } catch (err) {
+      setError('無法載入商品，請稍後再試');
+      console.error('Error fetching products:', err);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
-  // 搜尋相關狀態
-  const [searchInput, setSearchInput] = useState('');  // 即時輸入值
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');  // 延遲後的搜尋詞
-
-  // 使用 useEffect 實現 debounce
+  // 在組件載入時獲取商品
   useEffect(() => {
-    // 設定 500ms 的延遲
+    fetchProducts();
+  }, []);
+
+  // 搜尋防抖
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchInput);
     }, 350);
 
-    // cleanup function
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // 使用 useMemo 優化搜尋效能
+  // 過濾商品
   const filteredProducts = useMemo(() => {
     if (!debouncedSearchTerm.trim()) return products;
     
@@ -61,9 +73,14 @@ const HomePage = () => {
     );
   }, [products, debouncedSearchTerm]);
 
-  // 處理搜尋輸入
+  // 處理搜尋
   const handleSearchChange = useCallback((event) => {
     setSearchInput(event.target.value);
+  }, []);
+
+  // 重試功能
+  const handleRetry = useCallback(() => {
+    fetchProducts();
   }, []);
 
   return (
@@ -86,22 +103,34 @@ const HomePage = () => {
               placeholder="搜尋商品"
               value={searchInput}
               onChange={handleSearchChange}
+              disabled={loading || !!error}
             />
           </SearchBarContainer>
         </HeaderContent>
       </Header>
       
-      <ProductsGrid>
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))
-        ) : (
-          <NoResultsMessage>
-            找不到符合「{debouncedSearchTerm}」的商品
-          </NoResultsMessage>
-        )}
-      </ProductsGrid>
+      {loading && <LoadingSpinner />}
+      
+      {error && (
+        <ErrorMessage>
+          {error}
+          <button onClick={handleRetry}>重試</button>
+        </ErrorMessage>
+      )}
+      
+      {!loading && !error && (
+        <ProductsGrid>
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map(product => (
+              <ProductCard key={product.product_id} product={product} />
+            ))
+          ) : (
+            <NoResultsMessage>
+              找不到符合「{debouncedSearchTerm}」的商品
+            </NoResultsMessage>
+          )}
+        </ProductsGrid>
+      )}
     </Container>
   );
 };

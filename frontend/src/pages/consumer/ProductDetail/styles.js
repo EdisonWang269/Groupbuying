@@ -253,5 +253,56 @@ export const ShareButton = styled(Button)`
   }
 `;
 
+export const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+  min-height: 50vh;
+  text-align: center;
+
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #6CB7AA;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #5a9e93;
+    }
+  }
+`;
+
+export const ErrorMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 50vh;
+  gap: 1rem;
+
+  button {
+    padding: 0.75rem 1.5rem;
+    background-color: #6CB7AA;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #5a9e93;
+    }
+  }
+`;
+
 // 導出共享組件
 export { HeaderBackground };

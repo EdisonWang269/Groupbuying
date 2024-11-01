@@ -1,67 +1,75 @@
-// src/components/OrderModal/index.js
+// src/pages/consumer/components/OrderModal/index.js
 import React from 'react';
-import { X } from 'lucide-react';
 import {
-  Overlay,
+  ModalOverlay,
   ModalContainer,
   Content,
-  CloseButton,
   Title,
+  CloseButton,
   OrderDetails,
   DetailItem,
   TotalPrice,
+  Button,
   ButtonGroup,
-  Button
+  ErrorMessage,
 } from './styles';
 
-const OrderModal = ({ onClose, quantity, productName, price }) => {
-  const totalPrice = quantity * price;
-
-  const handleSubmit = () => {
-    // 這裡之後會串接 API
-    console.log('提交訂單', {
-      quantity,
-      totalPrice
-    });
-    onClose();
-  };
+const OrderModal = ({ 
+  onClose, 
+  onConfirm, 
+  loading, 
+  error,
+  product,
+  quantity
+}) => {
+  const total = product.price * quantity;
 
   return (
-    <Overlay onClick={onClose}>
-      <ModalContainer onClick={e => e.stopPropagation()}>
-        <CloseButton onClick={onClose}>
-          <X size={20} />
-        </CloseButton>
-        
+    <ModalOverlay>
+      <ModalContainer>
+        <Title>確認訂單</Title>
+        <CloseButton onClick={onClose} disabled={loading}>✕</CloseButton>
+
         <Content>
-          <Title>訂單確認</Title>
-          
           <OrderDetails>
             <DetailItem>
               <span>商品名稱</span>
-              <span>{productName}</span>
+              <span>{product.product_name}</span>
             </DetailItem>
             <DetailItem>
               <span>單價</span>
-              <span>NT$ {price}</span>
+              <span>NT$ {product.price} /{product.unit}</span>
             </DetailItem>
             <DetailItem>
               <span>數量</span>
-              <span>{quantity} 盒</span>
+              <span>{quantity}</span>
             </DetailItem>
             <TotalPrice>
               <span>總計</span>
-              <span>NT$ {totalPrice}</span>
+              <span>NT$ {total}</span>
             </TotalPrice>
           </OrderDetails>
-          
+
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+
           <ButtonGroup>
-            <Button onClick={onClose}>取消</Button>
-            <Button primary onClick={handleSubmit}>確認下單</Button>
+            <Button 
+              onClick={onClose} 
+              disabled={loading}
+            >
+              取消
+            </Button>
+            <Button 
+              onClick={onConfirm}
+              disabled={loading}
+              primary
+            >
+              {loading ? '處理中...' : '確認下單'}
+            </Button>
           </ButtonGroup>
         </Content>
       </ModalContainer>
-    </Overlay>
+    </ModalOverlay>
   );
 };
 
