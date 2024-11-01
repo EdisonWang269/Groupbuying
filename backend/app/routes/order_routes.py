@@ -174,7 +174,8 @@ def get_all_orders_by_phone():
                 c.phone,
                 o.receive_status,
                 p.arrival_date,
-                p.due_days
+                p.due_days,
+                p.price
             FROM 
                 Customer c
             JOIN 
@@ -209,6 +210,7 @@ def get_all_orders_by_phone():
                 "receive_status": order[4],
                 "arrival_date": arrival_date.strftime("%Y-%m-%d") if arrival_date else None,
                 "due_date": due_date.strftime("%Y-%m-%d") if due_date else None,
+                "price": order[7]*order[2],
             })
             count += 1
 
