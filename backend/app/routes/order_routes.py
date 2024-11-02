@@ -166,25 +166,6 @@ def get_all_orders_by_phone():
         if role != "merchant":
             return jsonify({"error": "Insufficient permissions"}), 403
 
-        # 首先檢查手機號碼是否存在於系統中
-        check_phone_query = """
-            SELECT userid 
-            FROM Customer 
-            WHERE phone = %s 
-            AND store_id = %s;
-        """
-        phone_exists = execute_query(check_phone_query, (phone, store_id))
-
-        if not phone_exists:
-            return jsonify({
-                "error": "Phone number not found",
-                "code": "PHONE_NOT_FOUND",
-                "order": [],
-                "order_count": 0,
-                "user_exists": False
-            }), 200  # 改為 200 狀態碼，因為這是正常的查詢結果
-
-        # 如果手機號碼存在，查詢訂單
         query = """
             SELECT 
                 c.user_name,
@@ -197,50 +178,43 @@ def get_all_orders_by_phone():
                 p.price
             FROM 
                 Customer c
-            LEFT JOIN 
+            JOIN 
                 `Order` o ON c.userid = o.userid
-            LEFT JOIN 
+            JOIN 
                 Product p ON o.product_id = p.product_id
             WHERE c.phone = %s
-            AND c.store_id = %s;
+            AND p.store_id = %s;
         """
         orders = execute_query(query, (phone, store_id), True)
 
+        if not orders:
+            return jsonify({"message": "No orders found for this phone number"}), 200
+
         data = []
         count = 0
-        
-        if orders:
-            for order in orders:
-                # 檢查是否有真實的訂單數據（因為使用了 LEFT JOIN）
-                if all(x is None for x in order[1:]):  # 如果除了 user_name 外都是 NULL
-                    continue
+        for order in orders:
+            arrival_date = order[5]
+            due_days = order[6]
+            due_date = None
+            if arrival_date and due_days is not None:
+                try:
+                    due_date = arrival_date + datetime.timedelta(days=due_days)
+                except Exception as e:
+                    return jsonify({"error": "day count error"}), 500
 
-                arrival_date = order[5]
-                due_days = order[6]
-                due_date = None
-                if arrival_date and due_days is not None:
-                    try:
-                        due_date = arrival_date + datetime.timedelta(days=due_days)
-                    except Exception as e:
-                        return jsonify({"error": "day count error"}), 500
+            data.append({
+                "user_name": order[0],
+                "product_name": order[1],
+                "quantity": order[2],
+                "phone": order[3],
+                "receive_status": order[4],
+                "arrival_date": arrival_date.strftime("%Y-%m-%d") if arrival_date else None,
+                "due_date": due_date.strftime("%Y-%m-%d") if due_date else None,
+                "price": order[7]*order[2],
+            })
+            count += 1
 
-                data.append({
-                    "user_name": order[0],
-                    "product_name": order[1],
-                    "quantity": order[2],
-                    "phone": order[3],
-                    "receive_status": order[4],
-                    "arrival_date": arrival_date.strftime("%Y-%m-%d") if arrival_date else None,
-                    "due_date": due_date.strftime("%Y-%m-%d") if due_date else None,
-                    "price": order[7]*order[2] if order[7] and order[2] else 0,
-                })
-                count += 1
-
-        return jsonify({
-            "order": data, 
-            "order_count": count,
-            "user_exists": True
-        }), 200
+        return jsonify({"order":data, "order_count":count}), 200
 
     except Exception as e:
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
