@@ -178,8 +178,11 @@ def get_all_orders_by_phone():
         if not phone_exists:
             return jsonify({
                 "error": "Phone number not found",
-                "code": "PHONE_NOT_FOUND"
-            }), 404
+                "code": "PHONE_NOT_FOUND",
+                "order": [],
+                "order_count": 0,
+                "user_exists": False
+            }), 200  # 改為 200 狀態碼，因為這是正常的查詢結果
 
         # 如果手機號碼存在，查詢訂單
         query = """
@@ -194,21 +197,24 @@ def get_all_orders_by_phone():
                 p.price
             FROM 
                 Customer c
-            JOIN 
+            LEFT JOIN 
                 `Order` o ON c.userid = o.userid
-            JOIN 
+            LEFT JOIN 
                 Product p ON o.product_id = p.product_id
             WHERE c.phone = %s
-            AND p.store_id = %s;
+            AND c.store_id = %s;
         """
         orders = execute_query(query, (phone, store_id), True)
 
-        # 即使沒有訂單，也返回空數組而不是 404
         data = []
         count = 0
         
         if orders:
             for order in orders:
+                # 檢查是否有真實的訂單數據（因為使用了 LEFT JOIN）
+                if all(x is None for x in order[1:]):  # 如果除了 user_name 外都是 NULL
+                    continue
+
                 arrival_date = order[5]
                 due_days = order[6]
                 due_date = None
@@ -226,7 +232,7 @@ def get_all_orders_by_phone():
                     "receive_status": order[4],
                     "arrival_date": arrival_date.strftime("%Y-%m-%d") if arrival_date else None,
                     "due_date": due_date.strftime("%Y-%m-%d") if due_date else None,
-                    "price": order[7]*order[2],
+                    "price": order[7]*order[2] if order[7] and order[2] else 0,
                 })
                 count += 1
 
